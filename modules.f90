@@ -24,11 +24,29 @@ module parm
 end module
 
 module logic
+integer, parameter :: max_files=10
 logical,save:: echo 
-logical, save:: do_rmsd 
-logical, save:: do_primitives
-logical, save:: fstr    
+logical, save:: do_compare
+logical, save:: do_traj
+character(200) filevec (max_files) ! file name vector
+
+! primitive analysis
+real(8) thresh_bond,thresh_ang,thresh_tor
+
 end module logic
+
+module internals
+
+! internal arrays             
+integer int_nb,int_na,int_nt
+real(8), allocatable :: int_bval(:)
+integer, allocatable :: int_bcast(:,:)
+real(8), allocatable :: int_aval(:)
+integer, allocatable :: int_acast(:,:)
+real(8), allocatable :: int_tval(:)
+integer, allocatable :: int_tcast(:,:)
+
+end module internals
 
 
 module constant

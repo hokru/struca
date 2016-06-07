@@ -19,13 +19,14 @@ real(8) cc(3),rr(3)
 real(8) xrot,yrot,zrot
 real(8) c1(3),c2(3),dum1(nat),dum2(nat)
 real(8) R(3,3),S(4,4),xnorm,ynorm,lam
+real(8) rmsd
 
 !coord1=xyz1
 !coord2=xyz2
 
 print*,''
 print*,''
-print*,' Aligning mol1 -> mol2'
+print*,' Aligning mol2 -> mol1'
 print*,''
 print*,'    quaternion RMSD & alignment:'
 print*,'      E.A. Coutsias, C. Seok, K.A.Dill J. Comput. Chem.,2004,25,1849-1857'
@@ -84,7 +85,8 @@ enddo
 
 
 
-! diagonalize
+! diagonalize, return eigenvectors in s, eigenvalues in ev
+! destroys s
 call DiagSM(4,s,ev)
 
 !print*,'ev',ev
@@ -92,19 +94,26 @@ call DiagSM(4,s,ev)
 q(1:4)=s(1:4,4)
 
 ! this RMSD is correct!
-print*,' RMSD (qfit) [A]: ',sqrt(max(0.0d0,( (xnorm+ynorm)-2.0d0*ev(4) ))/dble(nat))
+print*,''
+rmsd=sqrt(max(0.0d0,( (xnorm+ynorm)-2.0d0*ev(4) ))/dble(nat))
+write(*,'(2x,''RMSD (qfit): [ang] '',F8.4)') rmsd
+print*,''
+
+!print*,' RMSD (qfit) [A]: ',sqrt(max(0.0d0,( (xnorm+ynorm)-2.0d0*ev(4) ))/dble(nat))
 !print*,'q',q
 
 ! translate to rotation matrix
- rot(1,1)=q(1)**2 + q(2)**2 - q(3)**2 - q(4)**2
- rot(2,2)=q(1)**2 - q(2)**2 + q(3)**2 - q(4)**2
- rot(3,3)=q(1)**2 - q(2)**2 - q(3)**2 + q(4)**2
- rot(1,2)=2d0*(q(2)*q(3)-q(1)*q(4))
- rot(1,3)=2d0*(q(2)*q(4)+q(1)*q(3))
- rot(2,1)=2d0*(q(2)*q(3)+q(1)*q(4))
- rot(3,1)=2d0*(q(2)*q(4)-q(1)*q(3))
- rot(2,3)=2d0*(q(3)*q(4)-q(1)*q(2))
- rot(3,2)=2d0*(q(3)*q(4)+q(1)*q(2))
+call q_to_rot(q,rot)
+
+! rot(1,1)=q(1)**2 + q(2)**2 - q(3)**2 - q(4)**2
+! rot(2,2)=q(1)**2 - q(2)**2 + q(3)**2 - q(4)**2
+! rot(3,3)=q(1)**2 - q(2)**2 - q(3)**2 + q(4)**2
+! rot(1,2)=2d0*(q(2)*q(3)-q(1)*q(4))
+! rot(1,3)=2d0*(q(2)*q(4)+q(1)*q(3))
+! rot(2,1)=2d0*(q(2)*q(3)+q(1)*q(4))
+! rot(3,1)=2d0*(q(2)*q(4)-q(1)*q(3))
+! rot(2,3)=2d0*(q(3)*q(4)-q(1)*q(2))
+! rot(3,2)=2d0*(q(3)*q(4)+q(1)*q(2))
 
 ! compared well with Dill's code
 !print*,'rotation matrix',rot
@@ -120,3 +129,21 @@ enddo
 return
 end subroutine
 
+! forms rotation matrix from quarternion
+subroutine q_to_rot(q,rot)
+implicit none
+real(8), intent(in)    :: q(4)
+real(8), intent(inout) :: rot(3,3)
+
+rot(1,1)=q(1)**2 + q(2)**2 - q(3)**2 - q(4)**2
+rot(2,2)=q(1)**2 - q(2)**2 + q(3)**2 - q(4)**2
+rot(3,3)=q(1)**2 - q(2)**2 - q(3)**2 + q(4)**2
+rot(1,2)=2d0 * (q(2)*q(3) - q(1)*q(4))
+rot(1,3)=2d0 * (q(2)*q(4) + q(1)*q(3))
+rot(2,1)=2d0 * (q(2)*q(3) + q(1)*q(4))
+rot(3,1)=2d0 * (q(2)*q(4) - q(1)*q(3))
+rot(2,3)=2d0 * (q(3)*q(4) - q(1)*q(2))
+rot(3,2)=2d0 * (q(3)*q(4) + q(1)*q(2))
+return
+
+end subroutine
