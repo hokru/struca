@@ -24,7 +24,9 @@ real(8) rmsd
 !coord1=xyz1
 !coord2=xyz2
 
-print*,''
+print*,'***********'
+print*,'*  RMSD   *'
+print*,'***********'
 print*,''
 print*,' Aligning mol2 -> mol1'
 print*,''

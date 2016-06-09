@@ -77,7 +77,11 @@ if(do_compare) then
 
   call composition(nat,mol1%iat)
 
-! rotational constants
+print*,'*******************'
+print*,'* INERTIA TENSOR  *'
+print*,'*******************'
+! calc rotational constants
+! one needs to move the molecule to the COM first
  call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
 print*,'MOLECULE 1  : ', trim(filevec(1))
  call getIntertia(nat,mol1%iat,mol1%xyz,.false.)
