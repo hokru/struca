@@ -2,7 +2,7 @@
   PROG = ~/bin/struca
 
 #  OBJS=modules.o main.o io.o  string.o eval_opt.o dist.o prtim.o
-  OBJS=modules.o main.o io.o string.o dist.o rmsd.o prtim.o math.o intcoords.o bond_matrix.o align.o  eval_opt.o
+  OBJS=modules.o main.o io.o string.o dist.o rmsd.o prtim.o math.o intcoords.o bond_matrix.o align.o  eval_opt.o molecule.o
 
 #  FC = gfortran -fopenmp
   FC = gfortran -static 

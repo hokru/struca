@@ -9,6 +9,7 @@ use logic ! essential logic
 !use ls_rmsd
 implicit none
 character(80) basename
+real(8) com(3)
 
 type(molecule) mol1
 type(molecule) mol2
@@ -73,6 +74,19 @@ if(do_compare) then
   call get_rmsd(nat,mol1%xyz,mol2%xyz)
   basename=trim(filevec(2))//'_'//trim(filevec(1))
   call analyse_primitives(mol1,mol2,trim(basename))
+
+  call composition(nat,mol1%iat)
+
+! rotational constants
+ call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
+print*,'MOLECULE 1  : ', trim(filevec(1))
+ call getIntertia(nat,mol1%iat,mol1%xyz,.false.)
+print*,'MOLECULE 2  : ', trim(filevec(2))
+ call getCOM(com,nat,mol2%xyz,mol2%iat,.true.)
+ call getIntertia(nat,mol2%iat,mol2%xyz,.false.)
+
+
+
 endif
 
 
