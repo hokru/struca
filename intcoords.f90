@@ -7,21 +7,33 @@
 ! 2 task are handled:
 ! 1) 'all' unique bonds/angles/torsions. detailed output in *.dat files
 ! 2) user defined bonds/angles/torsions.
-subroutine analyse_primitives(mol1,mol2)
+subroutine analyse_primitives(mol1,mol2,basename)
 use parm
 use constant, only: au2ang
 use internals
 use logic, only: thresh_bond,thresh_ang,thresh_tor
+use omp_lib
+use atomdata,only: el
 implicit none
 type(molecule) :: mol1,mol2
 integer bond(nat,nat),kk
-real(8) s,db(nat),x
+real(8) s,db(nat),x,rab
 real(8) ang1,ang2,anggrad1,anggrad2
 integer ii,jj
 integer io,tot
+integer iat(nat)
 real(8) dummy(1000),thresh
 real(8), allocatable :: tvec(:)
+character(*) basename
+character(200) file_out
+!character(2) esym
 
+print*,'************************'
+print*,'* PRIMITIVE ANALYSIS   *'
+print*,'************************'
+
+file_out=trim(basename)//'_internals.dat'
+print*,'  Output: ',trim(file_out)
 dummy=0
 ! bonding from molecule 1
 call bondmatrix(mol1%xyz,mol1%iat,bond)
@@ -35,7 +47,8 @@ print*,'******************'
 
 thresh=thresh_bond
 
-open(newunit=io,file='bonds.dat')
+!open(newunit=io,file='bonds.dat')
+open(newunit=io,file=file_out)
 k=0
 s=0
 kk=0
@@ -48,18 +61,26 @@ do i=1,nat-1
     x=mol1%dist(k)-mol2%dist(k)
     s=s+x
     dummy(kk)=x
+!     write(*,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',F8.4)'),'delta_bond',i,el(mol1%iat(i)),j,el(mol2%iat(j)),x
    if(abs(x)>=thresh) then
-     write(io,'(a,I5,I5,F8.4,a)'),'delta_bond',i,j,x,' * '
+!     write(io,'(a,I5,I5,F8.4,a)'),'delta_bond',i,j,x,' * '
+     write(io,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,a3)'),'delta_bond',i,el(mol1%iat(i)),j,el(mol2%iat(j)),x,' * '
    else
-     write(io,'(a,I5,I5,F8.4)'),'delta_bond',i,j,x
+!     write(io,'(a,I5,I5,F8.4)'),'delta_bond',i,j,x
+     write(io,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4)'),'delta_bond',i,el(mol1%iat(i)),j,el(mol2%iat(j)),x
    endif
   endif
  enddo
 enddo
 
-!do i=1,int_nb
-! print*, int_bval(i),int_bcast(i,1:2)
-!enddo
+print*,' custom bonds: '
+do i=1,int_nb
+ii=int_bcast(i,1)
+jj=int_bcast(i,2)
+x=int_bval(i)-rab(mol2%xyz(1,ii),mol2%xyz(1,jj))
+write(*,'(2x,a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,a3)'),'delta_bond',ii,el(mol1%iat(ii)),jj,el(mol2%iat(jj)),x
+enddo
+print*,''
 
 !tot=int_nb+kk
 tot=kk
@@ -69,12 +90,12 @@ tvec(1:tot)=dummy(1:tot)
 print*,  ' # covalent bonds ', kk
 print'(a,F8.4)',' mean bond deviation [A]     : ', s/dble(kk)
 print'(a,F8.4)',' max       deviation [A]     : ', maxval(tvec)
-print*,  ' output: bonds.dat'
-close(io)
+!print*,  ' output: bonds.dat'
+!close(io)
 
 ! currently, we dont have the atom number data... :(
-print'(2x,a,F6.2,a)','|deviations| above ',thresh,' A :'
-print*,'(see * in bonds.dat)'
+!print'(2x,a,F6.2,a)','|deviations| above ',thresh,' A are marked (*)'
+print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
 do i=1,tot
   if(abs(tvec(i))>=thresh) then
 !    print '(1x,a,x,2(I4,x),F8.2)',tvec(i)
@@ -88,7 +109,7 @@ print*,'******************'
 print*,'* VALENCE ANGLES *'
 print*,'******************'
 thresh=thresh_ang
-open(newunit=io,file='angles.dat')
+!open(newunit=io,file='angles.dat')
 
 s=0
 kk=0
@@ -107,9 +128,11 @@ do i=1,nat-1
     call  angle(mol2%xyz,i,j,k,ang2,anggrad2)
     x=anggrad1-anggrad2
     if(abs(x)>=thresh) then
-     write(io,'(a,3(I5,x),F8.1,a)'),'delta_angle',i,j,k,x,' * '
+!     write(io,'(a,3(I5,x),F8.1,a)'),'delta_angle',i,j,k,x,' * '
+     write(io,'(a,x,3(I5,''['',a2,'']''),x,F8.4,a)'),'delta_angle',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),x,' * '
     else
-     write(io,'(a,3(I5,x),F8.1)'),'delta_angle',i,j,k,x
+!     write(io,'(a,3(I5,x),F8.1)'),'delta_angle',i,j,k,x
+     write(io,'(a,x,3(I5,''['',a2,'']''),x,F8.4)'),'delta_angle',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),x
     endif
    endif
   enddo
@@ -118,31 +141,66 @@ enddo
 
 print*,  ' # valence angles ', kk
 print'(a,F8.1)',' mean angle deviation [deg]  : ', s/dble(kk)
-print*,  ' output: angles.dat'
+!print*,  ' output: angles.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
-close(io)
+!close(io)
 print*,'******************'
 print*,'* TORSIONS       *'
 print*,'******************'
 
 
 thresh=thresh_tor
-open(newunit=io,file='torsions.dat')
+!open(newunit=io,file='torsions.dat')
 
 s=0
 kk=0
+! Works, but is slow for bigger molecules (17s for ~300 atoms)
 ! i-l pair loop + full j,k
 ! ok ???
+!do i=1,nat-1
+! do j=1,nat
+!   if(i==j) cycle
+!   do k=1,nat
+!     ii=nat*(i-1)*k
+!     if(k==j.or.k==i) cycle
+!        do l=i+1,nat
+!          jj=nat*(j-1)*l
+!          if(l==k.or.l==j.or.l==i) cycle
+!           if(bond(i,j)==1.and.bond(j,k)==1.and.bond(k,l)==1) then
+!            kk=kk+1
+!            call dihed(mol1%xyz,i,j,k,l,ang1,anggrad1)
+!            call dihed(mol2%xyz,i,j,k,l,ang2,anggrad2)
+!            call torsionfix(anggrad1,anggrad2,x)
+!            x=anggrad1-anggrad2
+!            s=s+x
+!            if(abs(x)>=thresh) then
+!             write(io,'(a,4(I5,x),F10.1,a)'),'delta_tors',i,j,k,l,x,' * '
+!            else
+!             write(io,'(a,4(I5,x),F10.1)'),'delta_tors',i,j,k,l,x
+!            endif
+!           endif
+!        enddo
+!     enddo
+!  enddo
+!enddo
+
+
+! checking for bonds earlier is obviously MUCH faster :-)
+s=0
+kk=0
 do i=1,nat-1
   do j=1,nat
     if(i==j) cycle
+    if(bond(i,j)==0) cycle 
     do k=1,nat
       ii=nat*(i-1)*k
       if(k==j.or.k==i) cycle
+      if(bond(j,k)==0) cycle
          do l=i+1,nat
            jj=nat*(j-1)*l
            if(l==k.or.l==j.or.l==i) cycle
-            if(bond(i,j)==1.and.bond(j,k)==1.and.bond(k,l)==1) then
+!            if(bond(i,j)==1.and.bond(j,k)==1.and.bond(k,l)==1) then
+            if(bond(k,l)==1) then
              kk=kk+1
              call dihed(mol1%xyz,i,j,k,l,ang1,anggrad1)
              call dihed(mol2%xyz,i,j,k,l,ang2,anggrad2)
@@ -150,9 +208,11 @@ do i=1,nat-1
              x=anggrad1-anggrad2
              s=s+x
              if(abs(x)>=thresh) then
-              write(io,'(a,4(I5,x),F10.1,a)'),'delta_tors',i,j,k,l,x,' * '
+!              write(io,'(a,4(I5,x),F10.1,a)'),'delta_tors',i,j,k,l,x,' * '
+              write(io,'(a,x,4(I5,''['',a2,'']''),x,F8.4,a)'),'delta_tors',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x,' * '
              else
-              write(io,'(a,4(I5,x),F10.1)'),'delta_tors',i,j,k,l,x
+!              write(io,'(a,4(I5,x),F10.1)'),'delta_tors',i,j,k,l,x
+               write(io,'(a,x,4(I5,''['',a2,'']''),x,F8.4)'),'delta_tors',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x
              endif
             endif
          enddo
@@ -160,10 +220,13 @@ do i=1,nat-1
    enddo
 enddo
 
+
+
 print*,  ' # torsions ', kk
 print'(a,F8.1)',' mean torsion deviation [deg]: ', s/dble(kk)
-print*,  ' output: torsions.dat'
+!print*,  ' output: torsions.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
+
 close(io)
 
 end subroutine

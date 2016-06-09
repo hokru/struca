@@ -3,7 +3,6 @@
 !*********************************
 
 subroutine run_drmsd(xyz1,diA,xyz2,diB)
-use omp_lib
 use constant, only: au2ang
 use parm, only: npair,nat
 implicit none

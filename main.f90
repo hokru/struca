@@ -5,10 +5,10 @@
 program  STRUCA
 use parm  ! essential parameter
 use logic ! essential logic
-use omp_lib
+!use omp_lib
 !use ls_rmsd
 implicit none
-integer ntr
+character(80) basename
 
 type(molecule) mol1
 type(molecule) mol2
@@ -36,6 +36,7 @@ call eval_options()
 ! do_rmsd=.true.
 !do_primitives=.true.
 
+!call rm_substr(trim(filevec(1)),'.xyz',basename)
 
 
 if (do_traj) then
@@ -67,10 +68,11 @@ if(do_compare) then
   call tmolrd(trim(filevec(2)),.false.,mol2%xyz,mol2%iat) 
   call get_dist(mol2) 
   call quaternion_fit(nat,mol1%xyz,mol2%xyz)
-  call wrxyz(mol1%iat,nat,mol2%xyz,trim(filevec(2))//'.rot.xyz')
+  call wrxyz(mol1%iat,nat,mol2%xyz,'rot_'//trim(filevec(2)))
 !  call run_drmsd(mol1%xyz,mol1%dist,mol2%xyz,mol1%dist) ! needs re-work
   call get_rmsd(nat,mol1%xyz,mol2%xyz)
-  call analyse_primitives(mol1,mol2)
+  basename=trim(filevec(2))//'_'//trim(filevec(1))
+  call analyse_primitives(mol1,mol2,trim(basename))
 endif
 
 

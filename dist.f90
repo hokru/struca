@@ -53,7 +53,7 @@ type(molecule) molx
 ! enddo
 !enddo
 
-!!$omp parallel do private(i,j,k,dx,dy,dz)
+!omp parallel do private(i,j,k,dx,dy,dz)
 !do k=1,npair
 !i=ki(k)
 !j=kj(k)
@@ -62,7 +62,7 @@ type(molecule) molx
 ! dz=molx%xyz(3,i)-molx%xyz(3,j)
 ! molx%dist(k)=dx*dx+dy*dy+dz*dz
 !enddo
-!!$omp end parallel do
+!omp end parallel do
 
 !endif
 

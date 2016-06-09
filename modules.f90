@@ -76,7 +76,20 @@ end module
 module atomdata
 real(8) ams(118)
 real(8) rvdw(94),rcov(94)
-!character(2) elem(95)
+character(2) el(95)
+
+
+data EL/'H ','HE',                                             &
+  'LI','BE','B ','C ','N ','O ','F ','NE',                       &
+  'NA','MG','AL','SI','P ','S ','CL','AR',                       &
+  'K ','CA','SC','TI','V ','CR','MN','FE','CO','NI','CU',        &
+  'ZN','GA','GE','AS','SE','BR','KR',                            &
+  'RB','SR','Y ','ZR','NB','MO','TC','RU','RH','PD','AG',        &
+  'CD','IN','SN','SB','TE','I ','XE',                            &
+  'CS','BA','LA','CE','PR','ND','PM','SM','EU','GD','TB','DY',   &
+  'HO','ER','TM','YB','LU','HF','TA','W ','RE','OS','IR','PT',   &
+  'AU','HG','TL','PB','BI','PO','AT','RN',                       &
+  'FR','RA','AC','TH','PA','U ','NP','PU','XX'/ ! ELEM(95) BEING A DUMMY
 
 
 ! taken from PSI4
@@ -144,5 +157,8 @@ data rcov /0.32d0,0.37d0, &
     1.64d0,1.58d0,1.50d0,1.41d0,1.36d0,1.32d0,1.30d0,1.64d0,1.88d0,1.48d0,1.45d0,1.50d0,1.42d0,1.47d0,1.46d0,  &
     ! Fr-Pu
     2.42d0,2.11d0,2.01d0,1.90d0,1.84d0,1.83d0,1.80d0,1.80d0/
+
+
+
 end module
 

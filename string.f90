@@ -269,3 +269,15 @@ fstr=.false.
 fstr=index(str,c).ne.0
 end function
 
+
+
+subroutine rm_substr(instr,substr,outstr)
+character(*) instr,substr,outstr
+integer i,s(2)
+
+s(1)=index(instr,substr,.false.)
+outstr=instr(1:s(1)-1)
+!print*,instr(1:s(1)-1),' ',substr
+!print*,s(1)
+end subroutine
+
