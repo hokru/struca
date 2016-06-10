@@ -94,6 +94,9 @@ logical orient
   conv=conv / (bohr2m * bohr2m * amu2kg * 100.d0)
 !  conv=conv * au2ang*au2ang
 
+
+
+
 mom=0d0
 !xyz=xyz/au2ang
 do i=1,nat
