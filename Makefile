@@ -1,9 +1,24 @@
 
-  PROG = ~/bin/struca
-#  OBJS=modules.o main.o io.o string.o dist.o rmsd.o prtim.o math.o intcoords.o bond_matrix.o align.o  eval_opt.o molecule.o version.o
+ PROG = ~/bin/struca
 
-  SOURCES=$(wildcard *.f90)
-  OBJS=$(SOURCES:.f90=.o)
+ SOURCES=\
+ modules.f90\
+ align.f90\
+ dist.f90\
+ intcoords.f90\
+ main.f90\
+ prtim.f90\
+ rmsd.f90\
+ version.f90\
+ bond_matrix.f90\
+ eval_opt.f90\
+ io.f90\
+ math.f90\
+ molecule.f90\
+ rdf.f90\
+ string.f90
+
+OBJS=$(SOURCES:.f90=.o)
 
 BUILID:=$(shell date)
 GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
