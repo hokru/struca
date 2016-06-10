@@ -61,9 +61,11 @@ if(do_compare) then
   allocate(mol1%iat(nat),mol2%iat(nat))
 
 !process molecules
+print*,'mol1:'
   call tmolrd(trim(filevec(1)),.false.,mol1%xyz,mol1%iat) 
   call get_dist(mol1) 
 
+print*,'mol2:'
   call tmolrd(trim(filevec(2)),.false.,mol2%xyz,mol2%iat) 
   call get_dist(mol2) 
 
@@ -88,8 +90,8 @@ print*,'* INERTIA TENSOR  *'
 print*,'*******************'
 ! calc rotational constants
 ! one needs to move the molecule to the COM first!
- call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
 print*,'MOLECULE 1  : ', trim(filevec(1))
+ call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
  call getIntertia(nat,mol1%iat,mol1%xyz,.false.,rot1)
 print*,'MOLECULE 2  : ', trim(filevec(2))
  call getCOM(com,nat,mol2%xyz,mol2%iat,.true.)

@@ -20,9 +20,10 @@ integer bond(nat,nat),kk
 real(8) s,db(nat),x,rab,xs
 real(8) ang1,ang2,anggrad1,anggrad2
 integer ii,jj
-integer io,tot
+integer io,tot,it
 integer iat(nat)
-real(8) dummy(1000),thresh
+integer, parameter:: max_dummy=50000
+real(8) dummy(max_dummy),thresh
 real(8), allocatable :: tvec(:)
 character(*) basename
 character(200) file_out
@@ -72,45 +73,50 @@ enddo
 
 print*,' custom bonds: '
 do i=1,int_nb
-ii=int_bcast(i,1)
-jj=int_bcast(i,2)
-x=int_bval(i)-rab(mol2%xyz(1,ii),mol2%xyz(1,jj))
-kk=kk+1
-dummy(kk)=x
-write(*,'(2x,a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,a3)'),'delta_bond',ii,el(mol1%iat(ii)),jj,el(mol2%iat(jj)),x
+ ii=int_bcast(i,1)
+ jj=int_bcast(i,2)
+ x=int_bval(i)-rab(mol2%xyz(1,ii),mol2%xyz(1,jj))
+ kk=kk+1
+ dummy(kk)=x
+ write(*,'(2x,a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,a3)'),'delta_bond',ii,el(mol1%iat(ii)),jj,el(mol2%iat(jj)),x
 enddo
 print*,''
 
 !tot=int_nb+kk
-tot=kk+int_nb
+!tot=kk+int_nb
+tot=kk
 allocate(tvec(tot))
 tvec=0d0
 tvec(1:tot)=dummy(1:tot)
 
 
 print*,  ' # covalent bonds ', kk
-print'(a,F8.4)',' mean abs bond deviation [A]     : ', sum(abs(tvec))/dble(kk)
-print'(a,F8.4)',' mean     bond deviation [A]     : ', sum(tvec)/dble(kk)
-print'(a,F8.4)',' max       deviation [A]         : ', maxval(tvec)
+print'(a,F8.4)',' mean abs bond deviation [A]  : ', sum(abs(tvec))/dble(kk)
+print'(a,F8.4)',' mean bond deviation [A]      : ', sum(tvec)/dble(kk)
+print'(a,F8.4)',' max deviation [A]            : ', maxval(tvec)
+print'(a,F8.4)',' min deviation [A]            : ', minval(tvec)
+print'(a,F8.4)',' deviation range [A]          : ', maxval(tvec)-minval(tvec)
 !close(io)
 
 !print'(2x,a,F6.2,a)','|deviations| above ',thresh,' A are marked (*)'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' A are marked (*) '
-do i=1,tot
-  if(abs(tvec(i))>=thresh) then
+
+!do i=1,tot
+!  if(abs(tvec(i))>=thresh) then
 !    print '(1x,a,x,2(I4,x),F8.2)',tvec(i)
-    print '(1x,x,F8.3)',tvec(i)
-  endif
-enddo
+!    print '(1x,x,F8.3)',tvec(i)
+!  endif
+!enddo
 
 !call print_threshold(tot,tvec,0.1d0)
-
+deallocate(tvec)
 print*,'******************'
 print*,'* VALENCE ANGLES *'
 print*,'******************'
 thresh=thresh_ang
 !open(newunit=io,file='angles.dat')
 
+dummy=0d0
 s=0
 kk=0
 do i=1,nat-1
@@ -126,6 +132,7 @@ do i=1,nat-1
     call  angle(mol1%xyz,i,j,k,ang1,anggrad1)
     call  angle(mol2%xyz,i,j,k,ang2,anggrad2)
     x=anggrad1-anggrad2
+    dummy(kk)=x
     s=s+abs(x)
     if(abs(x)>=thresh) then
      write(io,'(a,x,3(I5,''['',a2,'']''),x,F8.4,a)'),'delta_angle',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),x,' * '
@@ -137,11 +144,41 @@ do i=1,nat-1
  enddo
 enddo
 
+!ToDo: custom angles
+
+print*,' custom angless: '
+do it=1,int_na
+ i=int_acast(it,1)
+ j=int_acast(it,2)
+ k=int_acast(it,3)
+ call  angle(mol2%xyz,i,j,k,ang2,anggrad2)
+ x=int_aval(i)-anggrad2
+ kk=kk+1
+ dummy(kk)=x
+ write(*,'(2x,a,x,3(I5,''['',a2,'']''),x,F8.4)'),'delta_angle',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),x
+enddo
+print*,''
+
+
+
+tot=kk
+allocate(tvec(tot))
+tvec=0d0
+tvec(1:tot)=dummy(1:tot)
+
+
 print*,  ' # valence angles ', kk
-print'(a,F8.1)',' mean abs angle deviation [deg]  : ', s/dble(kk)
+!print'(a,F8.1)',' mean abs angle deviation [deg]  : ', s/dble(kk)
+print'(a,F8.1)',' mean abs angle deviation [deg]    : ', sum(abs(tvec))/dble(kk)
+print'(a,F8.1)',' mean angle deviation [deg]        : ', sum(tvec)/dble(kk)
+print'(a,F8.1)',' max deviation [deg]               : ', maxval(tvec)
+print'(a,F8.1)',' min deviation [deg]               : ', minval(tvec)
+print'(a,F8.1)',' deviation range [deg]             : ', maxval(tvec)-minval(tvec)
 !print*,  ' output: angles.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
 !close(io)
+
+deallocate(tvec)
 print*,'******************'
 print*,'* TORSIONS       *'
 print*,'******************'
@@ -150,7 +187,7 @@ print*,'******************'
 thresh=thresh_tor
 !open(newunit=io,file='torsions.dat')
 
-
+dummy=0d0
 ! checking for bonds earlier is obviously MUCH faster :-)
 s=0
 kk=0
@@ -171,7 +208,8 @@ do i=1,nat-1
              call dihed(mol1%xyz,i,j,k,l,ang1,anggrad1)
              call dihed(mol2%xyz,i,j,k,l,ang2,anggrad2)
              call torsionfix(anggrad1,anggrad2,x)
-             x=anggrad1-anggrad2
+!             x=anggrad1-anggrad2
+             dummy(kk)=x
              s=s+abs(x)
              if(abs(x)>=thresh) then
               write(io,'(a,x,4(I5,''['',a2,'']''),x,F8.4,a)'),'delta_tors',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x,' * '
@@ -185,14 +223,39 @@ do i=1,nat-1
 enddo
 
 
+! ToDo: custom torsions
+print*,' custom torsions: '
+do it=1,int_nt
+ i=int_tcast(it,1)
+ j=int_tcast(it,2)
+ k=int_tcast(it,3)
+ l=int_tcast(it,4)
+ call dihed(mol2%xyz,i,j,k,l,ang2,anggrad2)
+ call torsionfix(int_tval(it),anggrad2,x)
+ kk=kk+1
+ dummy(kk)=x
+ write(*,'(2x,a,x,4(I5,''['',a2,'']''),x,F8.4)'),'delta_tors',i,el(mol1%iat(i)),j,el(mol2%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x
+enddo
+print*,''
+
+
+tot=kk
+allocate(tvec(tot))
+tvec=0d0
+tvec(1:tot)=dummy(1:tot)
 
 print*,  ' # torsions ', kk
-print'(a,F8.1)',' mean abs torsion deviation [deg]: ', s/dble(kk)
+!print'(a,F8.1)',' mean abs torsion deviation [deg]: ', s/dble(kk)
+print'(a,F8.1)',' mean abs dihedral deviation [deg] : ', sum(abs(tvec))/dble(kk)
+print'(a,F8.1)',' mean dihedral deviation [deg]     : ', sum(tvec)/dble(kk)
+print'(a,F8.1)',' max deviation [deg]               : ', maxval(tvec)
+print'(a,F8.1)',' min deviation [deg]               : ', minval(tvec)
+print'(a,F8.1)',' deviation range [deg]             : ', maxval(tvec)-minval(tvec)
 !print*,  ' output: torsions.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
 
 close(io)
-
+deallocate(tvec)
 end subroutine
 
 ! fixed 0/360 switches in torsion differences
@@ -373,9 +436,9 @@ do
      call dihed(xyz0,ii,jj,kk,ll,dih,dgrad)
      int_tval(int_nt)=dgrad
      int_tcast(int_nt,1)=ii
-     int_tcast(int_nt,1)=jj
-     int_tcast(int_nt,1)=kk
-     int_tcast(int_nt,1)=ll
+     int_tcast(int_nt,2)=jj
+     int_tcast(int_nt,3)=kk
+     int_tcast(int_nt,4)=ll
      write(*,'(2x,a,4I4,2x,a,F7.2)') 'torsion [deg] ',ii,jj,kk,ll,' | value: ',dgrad
     endif
 
