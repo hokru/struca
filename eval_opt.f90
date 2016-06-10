@@ -26,7 +26,7 @@ if(maxarg.gt.0) then
    print*,'   -h                       this help'
    print*,'   -comp <ref. structure> <structure-to-compare>    compare 2 molecules'
 !   print*,'   -traj <xyz trajectory>                           analyse trajectory'
-   print*,'   -struc <structure>                               analyse singluar molecule'
+   print*,'   -struc <structure>                               analyse singular molecule'
    print*,'   '
    print*,'   -bthr/-athr/-tthr        bond/angle/torsion thresholds'
    print*,'   '
