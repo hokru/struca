@@ -95,7 +95,7 @@ print'(a,F8.4)',' max       deviation [A]         : ', maxval(tvec)
 !close(io)
 
 !print'(2x,a,F6.2,a)','|deviations| above ',thresh,' A are marked (*)'
-print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
+print'(2x,a,F6.2,a)','|deviations| above ',thresh,' A are marked (*) '
 do i=1,tot
   if(abs(tvec(i))>=thresh) then
 !    print '(1x,a,x,2(I4,x),F8.2)',tvec(i)
