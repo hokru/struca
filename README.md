@@ -11,19 +11,13 @@ This is a **simple** tool to help compare structures and compute trajectory data
 * run `struca -h` to see all options
 
 
-#### available options:
-`    options:`
-
-`    -h                       this help`
-
-`    -comp <ref. structure> <structure-to-compare>   :  compare 2 molecules`
-
-`    -struc <structure>                              : analyse singular molecule`
-
-`    -bthr/-athr/-tthr       : bond/angle/torsion thresholds`
-
-
-`  <structure> formats: XMOL TMOL `
+#### available features:
+* quaternion RMSD & alignment (all-atom)
+* comparison of all unique internal coordinates  + statistik
+* comparison of H-bonds 
+* request custom primitives for analysis (bonds/angles/torsions)
+* print internal coordinates + H-bond of single molecule
+* [soon] trajectory analysis
 
 
 ### prerequisites
