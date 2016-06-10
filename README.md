@@ -15,10 +15,10 @@ This is a **simple** tool to help compare structures and compute trajectory data
 * quaternion RMSD & alignment (all-atom)
 * comparison of all unique internal coordinates  + statistik
 * comparison of H-bonds 
+* comparison of Rotational constants
 * request custom primitives for analysis (bonds/angles/torsions)
-* print internal coordinates + H-bond of single molecule
+* print internal coordinates, H-bonds, Rotational constants for single molecule
 * [soon] trajectory analysis
-
 
 ### prerequisites
 
