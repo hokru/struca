@@ -3,3 +3,4 @@
 *.o
 *.dat
 *.pdb
+version.f90
