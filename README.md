@@ -1,6 +1,6 @@
 # structure analysis on the command line
 
-This is a **simple** tool to help compare structures and compute trajectory data on the command line.
+This is a **simple** tool to help compare structures and compute rajectory data on the command line.
 
 
 ## Getting started
@@ -23,7 +23,7 @@ This is a **simple** tool to help compare structures and compute trajectory data
 ### prerequisites
 
 - **BLAS/LAPACK**: performance not critical, any library will suffice 
-- **Fortran compilter**: developed and tested with gfortran (4.7).
+- **Fortran compiler**: developed and tested with gfortran (4.7).
 - **git**: git is needed to include the git version in the output.
 
 ### scientific references
