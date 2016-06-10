@@ -13,14 +13,19 @@ This is a **simple** tool to help compare structures and compute trajectory data
 
 # available options:
 `    options:`
+
 `    -h                       this help`
+
 `    -comp <ref. structure> <structure-to-compare>    compare 2 molecules`
-`    -traj <xyz trajectory>                           analyse trajectory`
+
 `    -struc <structure>                               analyse singluar molecule`
-`    `
+
+
 `    -bthr/-athr/-tthr        bond/angle/torsion thresholds`
-`    `
+
+
 `  <structure> formats: XMOL TMOL `
+
 
 ### prerequisites
 
