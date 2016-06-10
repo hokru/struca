@@ -76,7 +76,7 @@ end
 ! -xy         z**2+x**2   -yz
 ! -xz           -yz        x*2+y**2
 ! calculate moment of inertia and principle axis
-subroutine getIntertia(nat,iat,xyz,orient)
+subroutine getIntertia(nat,iat,xyz,orient,rot)
 use atomdata, only: ams
 use constant, only: Planck, pc_c, pi, bohr2m, amu2kg,au2ang
 implicit none

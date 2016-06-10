@@ -9,7 +9,7 @@ use logic ! essential logic
 !use ls_rmsd
 implicit none
 character(80) basename
-real(8) com(3)
+real(8) com(3),rot1(3),rot2(3)
 
 type(molecule) mol1
 type(molecule) mol2
@@ -90,11 +90,15 @@ print*,'*******************'
 ! one needs to move the molecule to the COM first!
  call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
 print*,'MOLECULE 1  : ', trim(filevec(1))
- call getIntertia(nat,mol1%iat,mol1%xyz,.false.)
+ call getIntertia(nat,mol1%iat,mol1%xyz,.false.,rot1)
 print*,'MOLECULE 2  : ', trim(filevec(2))
  call getCOM(com,nat,mol2%xyz,mol2%iat,.true.)
- call getIntertia(nat,mol2%iat,mol2%xyz,.false.)
+ call getIntertia(nat,mol2%iat,mol2%xyz,.false.,rot2)
+print*,''
+print*,'Deviation (2-1) :'
+rot2=rot2-rot1
 ! REMINDER: mol1/mol2 are now at the com, but NOT in the principle axis frame
+ write(*,'(3x,a,3(F12.5,a))') 'delta_rot:  A= ', rot2(1),' B= ',rot2(2) ,' C= ',rot2(3), ' [Mhz]'
 print*,''
 
 
