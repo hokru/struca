@@ -41,6 +41,7 @@ call eval_options()
 
 
 if (do_traj) then
+stop 'sorry. Not yet implemented'
 !call getarg(1,infile)
 !call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.true.)
 !allocate(traj1%mxyz(3,nat,nmol),traj1%iat(nat))
