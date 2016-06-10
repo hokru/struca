@@ -11,7 +11,7 @@ This is a **simple** tool to help compare structures and compute trajectory data
 * run `struca -h` to see all options
 
 
-# available options:
+#### available options:
 `    options:`
 
 `    -h                       this help`
