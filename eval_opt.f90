@@ -24,18 +24,23 @@ if(maxarg.gt.0) then
    print*,'struca [options]'
    print*,'   options:'
    print*,'   -h                       this help'
-   print*,'   -comp <file1> <file2>    compare 2 molecules'
-   print*,'   -traj <file1>            analyse trajectory'
+   print*,'   -comp <ref. structure> <structure-to-compare>    compare 2 molecules'
+   print*,'   -traj <xyz trajectory>                           analyse trajectory'
+   print*,'   -struc <structure>                               analyse singluar molecule'
    print*,'   '
    print*,'   -bthr/-athr/-tthr        bond/angle/torsion thresholds'
    print*,'   '
-   print*,'   '
+   print*,' <structure> formats: XMOL TMOL  '
    stop
   endif
   if(fstr(ftmp,'-comp ')) then
      do_compare=.true.
     filevec(1)=arg(i+1)
     filevec(2)=arg(i+2)
+  endif
+  if(fstr(ftmp,'-struc ')) then
+     do_single=.true.
+    filevec(1)=arg(i+1)
   endif
   if(fstr(ftmp,'-traj '))  then
    do_traj=.true.

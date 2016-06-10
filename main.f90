@@ -64,7 +64,6 @@ if(do_compare) then
 print*,'mol1:'
   call tmolrd(trim(filevec(1)),.false.,mol1%xyz,mol1%iat) 
   call get_dist(mol1) 
-
 print*,'mol2:'
   call tmolrd(trim(filevec(2)),.false.,mol2%xyz,mol2%iat) 
   call get_dist(mol2) 
@@ -83,6 +82,10 @@ print*,'mol2:'
 
 ! internals
   call analyse_primitives(mol1,mol2,trim(basename))
+
+
+! hbonds
+call delta_hbonds(mol1,mol2)
 
 print*,''
 print*,'*******************'
@@ -106,5 +109,17 @@ print*,''
 
 endif
 
+if(do_single) then
+  call tmolrd(trim(filevec(1)),.true.,1,1)
+  npair=(nat*(nat-1))/2
+  allocate(mol1%xyz(3,nat))
+  allocate(mol1%dist(npair))
+  allocate(mol1%iat(nat))
+print*,'mol:'
+  call tmolrd(trim(filevec(1)),.false.,mol1%xyz,mol1%iat)
+  call get_dist(mol1)
+  call hbonds(mol1)
+  call print_primitives(mol1)
+endif
 
 end

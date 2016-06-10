@@ -22,7 +22,6 @@ real(8) ang1,ang2,anggrad1,anggrad2
 integer ii,jj
 integer io,tot,it
 integer iat(nat)
-integer, parameter:: max_dummy=50000
 real(8) dummy(max_dummy),thresh
 real(8), allocatable :: tvec(:)
 character(*) basename
@@ -71,7 +70,7 @@ do i=1,nat-1
  enddo
 enddo
 
-print*,' custom bonds: '
+if(int_nb>0) print*,' custom bonds: '
 do i=1,int_nb
  ii=int_bcast(i,1)
  jj=int_bcast(i,2)
@@ -146,7 +145,7 @@ enddo
 
 !ToDo: custom angles
 
-print*,' custom angless: '
+if(int_na>0) print*,' custom angless: '
 do it=1,int_na
  i=int_acast(it,1)
  j=int_acast(it,2)
@@ -224,7 +223,7 @@ enddo
 
 
 ! ToDo: custom torsions
-print*,' custom torsions: '
+if(int_nt>0) print*,' custom torsions: '
 do it=1,int_nt
  i=int_tcast(it,1)
  j=int_tcast(it,2)

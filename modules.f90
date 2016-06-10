@@ -21,6 +21,10 @@ module parm
   integer a,b,c,d  ! reserved integers
   character(200) string
 
+! for dummy arrays
+integer, parameter:: max_dummy=50000
+
+
 end module
 
 module logic
@@ -28,6 +32,7 @@ integer, parameter :: max_files=10
 logical,save:: echo 
 logical, save:: do_compare
 logical, save:: do_traj
+logical, save:: do_single
 character(200) filevec (max_files) ! file name vector
 
 ! primitive analysis
@@ -45,6 +50,11 @@ real(8), allocatable :: int_aval(:)
 integer, allocatable :: int_acast(:,:)
 real(8), allocatable :: int_tval(:)
 integer, allocatable :: int_tcast(:,:)
+
+
+
+real(8), allocatable :: hb_val(:)
+integer, allocatable :: hb_cast(:,:)
 
 end module internals
 

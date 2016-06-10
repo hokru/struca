@@ -16,7 +16,9 @@
  math.f90\
  molecule.f90\
  rdf.f90\
- string.f90
+ string.f90\
+ hbonds.f90\
+ single_intcoords.f90
 
 OBJS=$(SOURCES:.f90=.o)
 
