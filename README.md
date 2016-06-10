@@ -11,6 +11,17 @@ This is a **simple** tool to help compare structures and compute trajectory data
 * run `struca -h` to see all options
 
 
+# available options:
+`    options:`
+`    -h                       this help`
+`    -comp <ref. structure> <structure-to-compare>    compare 2 molecules`
+`    -traj <xyz trajectory>                           analyse trajectory`
+`    -struc <structure>                               analyse singluar molecule`
+`    `
+`    -bthr/-athr/-tthr        bond/angle/torsion thresholds`
+`    `
+`  <structure> formats: XMOL TMOL `
+
 ### prerequisites
 
 - **BLAS/LAPACK**: performance not critical, any library will suffice 
