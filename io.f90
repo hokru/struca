@@ -307,7 +307,7 @@ if(do_allocate) then
   if(debug) print*,'checking: ',trim(infile)
   read(io,'(a)') cnat
   read(cnat,*) nat
-  if(debug) print*, 'found nat: ',nat
+  if(debug) print'(a,I6)', ' found nat  : ',nat
   rewind(io)
   nmol=0
   do
@@ -317,7 +317,7 @@ if(do_allocate) then
    endif
   enddo
   666 continue
-  if(debug) print*,'found nmol: ',nmol
+  if(debug) print'(a,I6)',' found nmol : ',nmol
   close(io)
 return
 endif

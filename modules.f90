@@ -38,6 +38,10 @@ character(200) filevec (max_files) ! file name vector
 ! primitive analysis
 real(8) thresh_bond,thresh_ang,thresh_tor
 
+
+!hbonds
+real(8) thresh_hbr
+real(8) thresh_hba
 end module logic
 
 module internals

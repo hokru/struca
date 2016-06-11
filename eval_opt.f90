@@ -25,11 +25,18 @@ if(maxarg.gt.0) then
    print*,'   options:'
    print*,'   -h                       this help'
    print*,'   -comp <ref. structure> <structure-to-compare>    compare 2 molecules'
+   print*,'   '
 !   print*,'   -traj <xyz trajectory>                           analyse trajectory'
+   print*,'   '
    print*,'   -struc <structure>                               analyse singular molecule'
    print*,'   '
    print*,'   -bthr/-athr/-tthr        bond/angle/torsion thresholds'
-   print*,'   '
+   print*,'        defaults: [0.05 A / 1.0 deg / 5.0 deg ] '
+   print*,'    '
+   print*,'   -hb_r/-hb_a       distance/angle thresholds for Hbond detection '
+   print*,'       defaults: [ 3.0 A / 120 deg ] '
+   print*,'    '
+   print*,'    '
    print*,' <structure> formats: XMOL TMOL  '
    stop
   endif
@@ -46,9 +53,13 @@ if(maxarg.gt.0) then
    do_traj=.true.
    filevec(1)=arg(i+1)
   endif
+  ! primitive thr
   if(fstr(ftmp,'-bthr')) thresh_bond=s2r(arg(i+1))
   if(fstr(ftmp,'-athr')) thresh_ang=s2r(arg(i+1))
   if(fstr(ftmp,'-tthr')) thresh_tor=s2r(arg(i+1))
+  ! Hbond thr
+  if(fstr(ftmp,'-hb_r')) thresh_hbr=s2r(arg(i+1))
+  if(fstr(ftmp,'-hb_a')) thresh_hba=s2r(arg(i+1))
  enddo
 
 

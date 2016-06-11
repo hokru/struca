@@ -3,6 +3,7 @@
 subroutine hbonds(molx)
 use parm
 use atomdata, only: el
+use logic, only:thresh_hbr,thresh_hba
 implicit none
 real(8) ang,anggrad
 integer acc(6),bond(nat,nat),n_hb
@@ -24,8 +25,8 @@ print*,''
 call bondmatrix(molx%xyz,molx%iat,bond)
 
 ! distance and angle criteria (simple!)
-rthr=3.0 ! Ang
-athr=120 ! deg D-H--A
+rthr=thresh_hbr ! Ang
+athr=thresh_hba ! deg D-H--A
 
 n_hb=0
 ! list of active sites: N,O,F,P,S,Cl

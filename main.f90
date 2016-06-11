@@ -10,6 +10,8 @@ use logic ! essential logic
 implicit none
 character(80) basename
 real(8) com(3),rot1(3),rot2(3)
+real(8) mem
+character(1) flag
 
 type(molecule) mol1
 type(molecule) mol2
@@ -20,42 +22,49 @@ type(trajectory) traj1
 echo=.false.
 do_traj=.false.
 do_compare=.false.
+
 thresh_bond=0.05d0
 thresh_ang=1d0
 thresh_tor=5d0
-
+thresh_hbr=3.0d0
+thresh_hba=120d0
 
 print*, '**********************'
 print*, '* structure analysis *'
 print*, '*                    *'
 print*, '**********************'
 call version
+print*,''
 
 call eval_options()
-!call read_options
 
-! do_rmsd=.true.
-!do_primitives=.true.
-
-!call rm_substr(trim(filevec(1)),'.xyz',basename)
-
-
+!***********************
+!* TRAJECTORY ANALYSIS *
+!***********************
 if (do_traj) then
-stop 'sorry. Not yet implemented'
-!call getarg(1,infile)
-!call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.true.)
-!allocate(traj1%mxyz(3,nat,nmol),traj1%iat(nat))
-!call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.false.)
-!print*,traj1%mxyz
-!stop 'halt'
+ call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.true.)
+ mem=(8d0*3.0d0*dble(nat)*dble(nmol))/(1024d0**2)
+ print'(a,F8.1,a)', ' memory for just the trajectory : ',mem ,' Mb '
+ if(mem>15000) then
+   print*,' ** WARNING ** '
+   print*,' memory over 15Gb required. Continue [y/n] ? '
+   read(*,*) flag
+   if(flag/='y') stop
+ endif
+ allocate(traj1%mxyz(3,nat,nmol),traj1%iat(nat))
+ call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.false.)
+
+ ! all data in memory
+
 endif
 
-
+!*************************
+!*  COMPARE 2 MOLECULES  *
+!*************************
 if(do_compare) then
-!  call getarg(filevec(1),infile)
-!  call getarg(filevec(2),infile2)
-  call tmolrd(trim(filevec(1)),.true.,1,1) 
 
+! poke dimensions
+  call tmolrd(trim(filevec(1)),.true.,1,1) 
   npair=(nat*(nat-1))/2
   allocate(mol1%xyz(3,nat),mol2%xyz(3,nat))
   allocate(mol1%dist(npair),mol2%dist(npair))
@@ -71,6 +80,7 @@ print*,'mol2:'
 
 !align + rmsd from fit
   call quaternion_fit(nat,mol1%xyz,mol2%xyz)
+
   call wrxyz(mol1%iat,nat,mol2%xyz,'rot_'//trim(filevec(2)))
 
 !  call run_drmsd(mol1%xyz,mol1%dist,mol2%xyz,mol1%dist) ! needs re-work
@@ -84,17 +94,12 @@ print*,'mol2:'
 ! internals
   call analyse_primitives(mol1,mol2,trim(basename))
 
-
 ! hbonds
 call delta_hbonds(mol1,mol2)
 
-print*,''
-print*,'*******************'
-print*,'* INERTIA TENSOR  *'
-print*,'*******************'
-print*,''
 ! calc rotational constants
-! one needs to move the molecule to the COM first!
+ call header_it
+! NOTE: one needs to move the molecules to the COM first!
 print*,'MOLECULE 1  : ', trim(filevec(1))
  call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
  call getIntertia(nat,mol1%iat,mol1%xyz,.false.,rot1)
@@ -108,9 +113,12 @@ rot2=rot2-rot1
  write(*,'(3x,a,3(F12.5,a))') 'delta_rot:  A= ', rot2(1),' B= ',rot2(2) ,' C= ',rot2(3), ' [Mhz]'
 print*,''
 
-
 endif
 
+
+!******************************
+!*  SINGLE MOLECULE TREATMENT *
+!******************************
 if(do_single) then
   call tmolrd(trim(filevec(1)),.true.,1,1)
   npair=(nat*(nat-1))/2
@@ -123,14 +131,17 @@ print*,'mol:'
   call hbonds(mol1)
   call print_primitives(mol1)
 
-
-print*,''
-print*,'*******************'
-print*,'* INERTIA TENSOR  *'
-print*,'*******************'
-print*,''
+ call header_it
  call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
  call getIntertia(nat,mol1%iat,mol1%xyz,.false.,rot1)
 endif
 
 end
+
+subroutine header_it()
+print*,''
+print*,'*******************'
+print*,'* INERTIA TENSOR  *'
+print*,'*******************'
+print*,''
+end subroutine
