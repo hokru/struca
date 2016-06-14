@@ -23,3 +23,23 @@ enddo
 
 ! call prmati(6,bond,nat,nat,'bond matrix')
 end
+
+
+
+
+subroutine count_fragments(xyz,nat,bond)
+implicit none
+real(8) xyz(3,nat)
+integer bond(nat,nat)
+integer i,j,nfrag,nat
+
+nfrag=1
+do i=1,nat
+ do j=1,nat
+  if(bond(i,j)==1) then
+  endif
+ enddo
+enddo
+
+
+end subroutine

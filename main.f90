@@ -22,12 +22,15 @@ type(trajectory) traj1
 echo=.false.
 do_traj=.false.
 do_compare=.false.
+do_frag=.false.
+do_single=.false.
 
 thresh_bond=0.05d0
 thresh_ang=1d0
 thresh_tor=5d0
 thresh_hbr=3.0d0
-thresh_hba=120d0
+!thresh_hba=120d0
+thresh_hba=35d0
 
 print*, '**********************'
 print*, '* structure analysis *'
@@ -128,12 +131,31 @@ if(do_single) then
 print*,'mol:'
   call tmolrd(trim(filevec(1)),.false.,mol1%xyz,mol1%iat)
   call get_dist(mol1)
-  call hbonds(mol1)
   call print_primitives(mol1)
+  call hbonds(mol1)
 
  call header_it
  call getCOM(com,nat,mol1%xyz,mol1%iat,.true.)
  call getIntertia(nat,mol1%iat,mol1%xyz,.false.,rot1)
+endif
+
+
+!***********************
+!*  FRAGMENT ANALYSIS  *
+!***********************
+if(do_frag) then
+  call tmolrd(trim(filevec(1)),.true.,1,1)
+  npair=(nat*(nat-1))/2
+  allocate(mol1%xyz(3,nat))
+  allocate(mol1%dist(npair))
+  allocate(mol1%iat(nat))
+print*,'mol:'
+  call tmolrd(trim(filevec(1)),.false.,mol1%xyz,mol1%iat)
+  call get_dist(mol1)
+! get fragments
+
+! get com distance between fragments
+
 endif
 
 end

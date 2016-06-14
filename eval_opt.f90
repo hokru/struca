@@ -49,6 +49,10 @@ if(maxarg.gt.0) then
      do_single=.true.
     filevec(1)=arg(i+1)
   endif
+  if(fstr(ftmp,'-frag ')) then
+     do_frag=.true.
+    filevec(1)=arg(i+1)
+  endif
   if(fstr(ftmp,'-traj '))  then
    do_traj=.true.
    filevec(1)=arg(i+1)

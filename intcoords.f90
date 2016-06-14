@@ -92,8 +92,8 @@ tvec(1:tot)=dummy(1:tot)
 print*,  ' # covalent bonds ', kk
 print'(a,F8.4)',' mean abs bond deviation [A]  : ', sum(abs(tvec))/dble(kk)
 print'(a,F8.4)',' mean bond deviation [A]      : ', sum(tvec)/dble(kk)
-print'(a,F8.4)',' max deviation [A]            : ', maxval(tvec)
-print'(a,F8.4)',' min deviation [A]            : ', minval(tvec)
+print'(a,F8.4)',' max (+) deviation [A]        : ', maxval(tvec)
+print'(a,F8.4)',' max (-) deviation [A]        : ', minval(tvec)
 print'(a,F8.4)',' deviation range [A]          : ', maxval(tvec)-minval(tvec)
 !close(io)
 
@@ -170,8 +170,8 @@ print*,  ' # valence angles ', kk
 !print'(a,F8.1)',' mean abs angle deviation [deg]  : ', s/dble(kk)
 print'(a,F8.1)',' mean abs angle deviation [deg]    : ', sum(abs(tvec))/dble(kk)
 print'(a,F8.1)',' mean angle deviation [deg]        : ', sum(tvec)/dble(kk)
-print'(a,F8.1)',' max deviation [deg]               : ', maxval(tvec)
-print'(a,F8.1)',' min deviation [deg]               : ', minval(tvec)
+print'(a,F8.1)',' max (+) deviation [deg]           : ', maxval(tvec)
+print'(a,F8.1)',' max (-) deviation [deg]           : ', minval(tvec)
 print'(a,F8.1)',' deviation range [deg]             : ', maxval(tvec)-minval(tvec)
 !print*,  ' output: angles.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
@@ -247,8 +247,8 @@ print*,  ' # torsions ', kk
 !print'(a,F8.1)',' mean abs torsion deviation [deg]: ', s/dble(kk)
 print'(a,F8.1)',' mean abs dihedral deviation [deg] : ', sum(abs(tvec))/dble(kk)
 print'(a,F8.1)',' mean dihedral deviation [deg]     : ', sum(tvec)/dble(kk)
-print'(a,F8.1)',' max deviation [deg]               : ', maxval(tvec)
-print'(a,F8.1)',' min deviation [deg]               : ', minval(tvec)
+print'(a,F8.1)',' max (+) deviation [deg]           : ', maxval(tvec)
+print'(a,F8.1)',' max (-) deviation [deg]           : ', minval(tvec)
 print'(a,F8.1)',' deviation range [deg]             : ', maxval(tvec)-minval(tvec)
 !print*,  ' output: torsions.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '

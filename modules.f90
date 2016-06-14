@@ -33,6 +33,7 @@ logical,save:: echo
 logical, save:: do_compare
 logical, save:: do_traj
 logical, save:: do_single
+logical, save:: do_frag
 character(200) filevec (max_files) ! file name vector
 
 ! primitive analysis
