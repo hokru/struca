@@ -39,13 +39,13 @@ print*, '**********************'
 call version
 print*,''
 
-nat=natPDB('1a.pdb')
-  allocate(mol1%xyz(3,nat))
-  allocate(mol1%dist(npair))
-  allocate(mol1%iat(nat))
-print*, nat
-call readPDB('1a.pdb',nat,mol1%xyz,mol1%iat)
-stop
+!nat=natPDB('1a.pdb')
+!  allocate(mol1%xyz(3,nat))
+!  allocate(mol1%dist(npair))
+!  allocate(mol1%iat(nat))
+!print*, nat
+!call readPDB('1a.pdb',nat,mol1%xyz,mol1%iat)
+!stop
 
 call eval_options()
 
