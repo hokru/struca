@@ -18,7 +18,8 @@
  rdf.f90\
  string.f90\
  hbonds.f90\
- single_intcoords.f90
+ single_intcoords.f90\
+ pdbread.f90
 
 OBJS=$(SOURCES:.f90=.o)
 
@@ -27,10 +28,13 @@ GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
 $(info Building: $(GIT_VERSION))
 
 
+OPENBLAS=/usr/qc/openblas_lib/
+
   FC = gfortran -static 
 #  FLAGS= -O3 -ffree-line-length-none -m64 
   FLAGS= -Og -g -fbounds-check -ffree-line-length-none -m64 
   LIBS= -llapack -lblas
+#  LIBS= -L$(OPENBLAS)/lib/ -lopenblas -lpthread
 
 # targets:
 .PHONY: all
@@ -44,6 +48,7 @@ version:
 	@echo 'writing new version.f90'
 	@echo "subroutine version" > version.f90
 	@echo     " print*,  'Build info:'" >> version.f90
+	@echo     " print*,  ' github        : https://github.com/hokru/struca '">> version.f90
 	@echo     " print*,  ' build date    : $(BUILID)     '"      >> version.f90
 	@echo     " print*,  ' git version   : $(GIT_VERSION)'"      >> version.f90
 	@echo     " print*,  ' '          "     >> version.f90
