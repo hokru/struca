@@ -347,13 +347,15 @@ integer i,j,k,l,nat,iat(nat)
 real(8) xyz(3,*)
 integer ierr
 character(*) infile
+character(120) message
 character(2) esym
 real(8) f
 print*,'writing ',trim(infile)
 !f=0.5291770d0
 f=1d0
 open(unit=55,file=infile,iostat=ierr,status='replace')
-if(ierr.ne.0) stop 'cannot write xopt.xyz'
+message='cannot write '//infile
+if(ierr.ne.0) call error(6,trim(message))
 write(55,'(I5)') nat
 write(55,*)
 !write(55,'(2F16.8)')energy,gnorm
@@ -362,4 +364,21 @@ do i=1,nat
 enddo
 close(55)
 end subroutine wrxyz
+
+
+
+subroutine error(io,aa)
+implicit none
+integer io
+character(*) aa
+
+
+write(io,'(a)')
+write(io,'(3x,a)')'************  ERROR  *********************'
+write(io,'(4x,a)') trim(aa)
+write(io,'(3x,a)')'******************************************'
+write(io,'(a)')
+stop
+
+end subroutine error
 
