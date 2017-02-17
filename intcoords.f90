@@ -1,7 +1,3 @@
-! ToDo
-! long term goal: re-factor so that we have both the custom internals as well as the automatic constructed ones
-! are in the same array. It allows better analysis and printing.
-
 
 ! analyse bonds,angles,dihedral deviations
 ! 2 task are handled:

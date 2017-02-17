@@ -1,0 +1,4 @@
+$prim
+bond 1 2
+angle 1 2 3
+torsion 1 2 3 4

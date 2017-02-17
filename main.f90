@@ -139,7 +139,7 @@ if(do_single) then
 print*,'mol:'
   call tmolrd(trim(filevec(1)),.false.,mol1%xyz,mol1%iat)
   call get_dist(mol1)
-  call print_primitives(mol1)
+  call print_primitives(mol1,trim(filevec(1)))
   call hbonds(mol1)
 
  call header_it

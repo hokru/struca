@@ -1,5 +1,5 @@
 ! print internals
-subroutine print_primitives(mol1)
+subroutine print_primitives(mol1,basename)
 use parm
 use constant, only: au2ang
 use internals
@@ -14,10 +14,8 @@ real(8) ang1,ang2,anggrad1,anggrad2
 integer ii,jj
 integer io,tot,it
 integer iat(nat)
-!real(8) dummy(max_dummy),thresh
-!real(8), allocatable :: tvec(:)
-!character(*) basename
-!character(200) file_out
+character(*) basename
+character(200) file_out
 
 print*,'************************'
 print*,'* PRIMITIVE ANALYSIS   *'
@@ -27,7 +25,8 @@ print*,'************************'
 call bondmatrix(mol1%xyz,mol1%iat,bond)
 
 call read_intcoord('struca.control',mol1%xyz)
-
+file_out=trim(basename)//'_internals.dat'
+open(newunit=io,file=file_out)
 
 print*,'******************'
 print*,'* BOND LENGTHS   *'
@@ -45,6 +44,7 @@ do i=1,nat-1
      kk=kk+1
      x=mol1%dist(k)
      write(*,'(2x,a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4)'),' bond',i,el(mol1%iat(i)),j,el(mol1%iat(j)),x
+     write(io,'(2x,a,x,I5,x,a2,x,I5,x,a2,x,F8.4)'),' bond',i,el(mol1%iat(i)),j,el(mol1%iat(j)),x
   endif
  enddo
 enddo
@@ -56,6 +56,7 @@ do i=1,int_nb
  x=int_bval(i)
  kk=kk+1
  write(*,'(2x,a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,a3)'),'  bond',ii,el(mol1%iat(ii)),jj,el(mol1%iat(jj)),x
+ write(io,'(2x,a,x,I5,x,a2,x,I5,x,a2,x,F8.4,a3)'),'  bond',ii,el(mol1%iat(ii)),jj,el(mol1%iat(jj)),x
 enddo
 print*,''
 
@@ -79,6 +80,7 @@ do i=1,nat-1
     call  angle(mol1%xyz,i,j,k,ang1,anggrad1)
     x=anggrad1
     write(*,'(2x,a,x,3(I5,''['',a2,'']''),x,F8.4)'),' angle',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),x
+    write(io,'(2x,a,x,3(I5,x,a2,x),F8.4)'),' angle',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),x
    endif
   enddo
  enddo
@@ -92,7 +94,8 @@ do it=1,int_na
  k=int_acast(it,3)
  x=int_aval(i)
     kk=kk+1
- write(*,'(2x,a,x,3(I5,''['',a2,'']''),x,F8.4)'),' angle',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),x
+    write(*,'(2x,a,x,3(I5,''['',a2,'']''),x,F8.4)'),' angle',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),x
+    write(io,'(2x,a,x,3(I5,x,a2,x),F8.4)'),' angle',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),x
 enddo
 print*,''
 
@@ -122,6 +125,7 @@ do i=1,nat-1
              call dihed(mol1%xyz,i,j,k,l,ang1,anggrad1)
              x=anggrad1
              write(*,'(2x,a,x,4(I5,''['',a2,'']''),x,F8.4)'),' torsion',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x
+             write(io,'(2x,a,x,4(I5,x,a2,x),F8.4)'),' torsion',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x
             endif
          enddo
       enddo
@@ -138,6 +142,7 @@ do it=1,int_nt
  x=int_tval(it)
  kk=kk+1
  write(*,'(2x,a,x,4(I5,''['',a2,'']''),x,F8.4)'),' torsion',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x
+ write(io,'(2x,a,x,4(I5,x,a2,x),F8.4)'),' torsion',i,el(mol1%iat(i)),j,el(mol1%iat(j)),k,el(mol1%iat(k)),l,el(mol1%iat(l)),x
 enddo
 print*,''
 
