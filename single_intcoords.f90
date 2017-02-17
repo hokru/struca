@@ -26,6 +26,8 @@ call bondmatrix(mol1%xyz,mol1%iat,bond)
 
 call read_intcoord('struca.control',mol1%xyz)
 file_out=trim(basename)//'_internals.dat'
+
+print*,'writing internals to ',trim(file_out)
 open(newunit=io,file=file_out)
 
 print*,'******************'
