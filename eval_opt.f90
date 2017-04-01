@@ -26,7 +26,7 @@ if(maxarg.gt.0) then
    print*,'   -h                       this help'
    print*,'   -comp <ref. structure> <structure-to-compare>    compare 2 molecules'
    print*,'   '
-!   print*,'   -traj <xyz trajectory>                           analyse trajectory'
+   print*,'   -traj <xyz trajectory>                           analyse trajectory'
    print*,'   '
    print*,'   -struc <structure>                               analyse singular molecule'
    print*,'   '
@@ -56,6 +56,11 @@ if(maxarg.gt.0) then
   if(fstr(ftmp,'-traj '))  then
    do_traj=.true.
    filevec(1)=arg(i+1)
+  endif
+  if(fstr(ftmp,'-tdist')) then
+   traj_dist=.true.
+  !  ia=s2i(arg(i+1))
+  !  ja=s2i(arg(i+2))
   endif
   ! primitive thr
   if(fstr(ftmp,'-bthr')) thresh_bond=s2r(arg(i+1))

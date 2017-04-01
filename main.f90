@@ -12,10 +12,11 @@ character(80) basename
 real(8) com(3),rot1(3),rot2(3)
 real(8) mem
 character(1) flag
+character(2) esym
 
 type(molecule) mol1
 type(molecule) mol2
-type(trajectory) traj1
+type(trajectory) traj
 
 integer natPDB
 
@@ -24,6 +25,7 @@ do_traj=.false.
 do_compare=.false.
 do_frag=.false.
 do_single=.false.
+traj_dist=.false.
 
 thresh_bond=0.05d0
 thresh_ang=1d0
@@ -53,7 +55,7 @@ call eval_options()
 !* TRAJECTORY ANALYSIS *
 !***********************
 if (do_traj) then
- call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.true.)
+ call read_trajxyz(filevec(1),nat,traj%iat,traj%mxyz,nmol,.true.)
  mem=(8d0*3.0d0*dble(nat)*dble(nmol))/(1024d0**2)
  print'(a,F8.1,a)', ' memory for just the trajectory : ',mem ,' Mb '
  if(mem>15000) then
@@ -62,9 +64,12 @@ if (do_traj) then
    read(*,*) flag
    if(flag/='y') stop
  endif
- allocate(traj1%mxyz(3,nat,nmol),traj1%iat(nat))
- call read_trajxyz(filevec(1),nat,traj1%iat,traj1%mxyz,nmol,.false.)
-
+ allocate(traj%mxyz(3,nat,nmol),traj%iat(nat))
+ traj%nat=nat
+ traj%nmol=nmol
+ call read_trajxyz(filevec(1),traj%nat,traj%iat,traj%mxyz,traj%nmol,.false.)
+ if(traj_dist) call dist_ana(filevec(1),traj)
+  
  ! all data in memory
 
 endif
@@ -163,8 +168,9 @@ print*,'mol:'
 ! get fragments
 
 ! get com distance between fragments
-
 endif
+
+
 
 end
 

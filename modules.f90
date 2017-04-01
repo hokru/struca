@@ -9,11 +9,13 @@ module parm
 
 
  type trajectory
+  integer nat  ! number of atoms per molecule
+  integer nmol ! number of molecules
   integer(4), allocatable :: iat(:) ! atom type (H=1, C=6, etc)
   real(8), allocatable :: mxyz(:,:,:) ! cartesian coordinates (originally in au) per step (3,nat,nmol)
  end type 
 
- ! global variables
+ ! global variables 
   integer(4) nat   ! number of atoms
   integer(4) nmol  ! number of molecule in traj
   integer(4) npair ! number of atom paris
@@ -39,6 +41,12 @@ character(200) filevec (max_files) ! file name vector
 ! primitive analysis
 real(8) thresh_bond,thresh_ang,thresh_tor
 
+
+! traj distance anal
+logical traj_dist
+real(8), external :: dbond
+real(8) adist,maxd,mind,ra(3),rb(3),rab
+integer ia,ja
 
 !hbonds
 real(8) thresh_hbr
