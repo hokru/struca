@@ -93,7 +93,7 @@ print*,'mol1:'
 print*,'mol2:'
   call tmolrd(trim(filevec(2)),.false.,mol2%xyz,mol2%iat) 
   call get_dist(mol2) 
-
+print*,'Deviations: mol1-mol2'
 !align + rmsd from fit
   call quaternion_fit(nat,mol1%xyz,mol2%xyz)
 
@@ -123,8 +123,8 @@ print*,'MOLECULE 2  : ', trim(filevec(2))
  call getCOM(com,nat,mol2%xyz,mol2%iat,.true.)
  call getIntertia(nat,mol2%iat,mol2%xyz,.false.,rot2)
 print*,''
-print*,'Deviation (2-1) :'
-rot2=rot2-rot1
+print*,'Deviation (1-2) :'
+rot1=rot1-rot2
 ! REMINDER: mol1/mol2 are now at the com, but NOT in the principle axis frame
  write(*,'(3x,a,3(F12.5,a))') 'delta_rot:  A= ', rot2(1),' B= ',rot2(2) ,' C= ',rot2(3), ' [Mhz]'
 print*,''

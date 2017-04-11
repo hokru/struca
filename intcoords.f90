@@ -161,7 +161,7 @@ allocate(tvec(tot))
 tvec=0d0
 tvec(1:tot)=dummy(1:tot)
 
-
+if(kk>1) then
 print*,  ' # valence angles ', kk
 !print'(a,F8.1)',' mean abs angle deviation [deg]  : ', s/dble(kk)
 print'(a,F8.1)',' mean abs angle deviation [deg]    : ', sum(abs(tvec))/dble(kk)
@@ -172,7 +172,7 @@ print'(a,F8.1)',' deviation range [deg]             : ', maxval(tvec)-minval(tve
 !print*,  ' output: angles.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
 !close(io)
-
+endif
 deallocate(tvec)
 print*,'******************'
 print*,'* TORSIONS       *'
@@ -239,6 +239,7 @@ allocate(tvec(tot))
 tvec=0d0
 tvec(1:tot)=dummy(1:tot)
 
+if(kk>1) then
 print*,  ' # torsions ', kk
 !print'(a,F8.1)',' mean abs torsion deviation [deg]: ', s/dble(kk)
 print'(a,F8.1)',' mean abs dihedral deviation [deg] : ', sum(abs(tvec))/dble(kk)
@@ -248,7 +249,7 @@ print'(a,F8.1)',' max (-) deviation [deg]           : ', minval(tvec)
 print'(a,F8.1)',' deviation range [deg]             : ', maxval(tvec)-minval(tvec)
 !print*,  ' output: torsions.dat'
 print'(2x,a,F6.2,a)','|deviations| above ',thresh,' deg are marked (*) '
-
+endif
 close(io)
 deallocate(tvec)
 end subroutine

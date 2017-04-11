@@ -8,7 +8,7 @@ implicit none
 real(8) ang,anggrad
 integer acc(6),bond(nat,nat),n_hb
 type(molecule) molx
-real(8) rthr,athr,a1,a2
+real(8) rthr,athr,a1,a2,rYX,rYH
 real(8) rab,r
 real(8) dummy(max_dummy)
 
@@ -43,22 +43,27 @@ acc(4)=15
 acc(5)=16
 acc(6)=17
 i=0;j=0;k=0
-write(*,'(a)'),'         atom      atom    H--X [A]  Y-H--X [deg]'
+write(*,'(a)'),'           Y    -    H ....... X     H--X [A]  Y-H--X [deg] |   Y-H [A]  Y---X [A]'
 do i=1,nat ! Y
  if(.not.any(acc==molx%iat(i))) cycle
  do j=1,nat ! H
    if(i==j) cycle 
    if(bond(i,j)/=1) cycle
    if(molx%iat(j)/=1) cycle 
-   do k=1,nat 
+   do k=1,nat  ! X
      if(k==i.or.k==j) cycle
      if(.not.any(acc==molx%iat(k))) cycle
        r=rab(molx%xyz(:,j),molx%xyz(:,k))
+       rYX=rab(molx%xyz(:,i),molx%xyz(:,k))
+       rYH=rab(molx%xyz(:,i),molx%xyz(:,j))
        call  angle(molx%xyz,i,j,k,ang,anggrad)
        if(r<=rthr.and.anggrad>=a1.and.anggrad<=a2) then
-       n_hb=n_hb+1
-         write(*,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,x,F8.1)'),'H-bond',j,el(molx%iat(i)),k,el(molx%iat(j)),r,anggrad
-!         print*,i,j,k,r,anggrad
+        n_hb=n_hb+1
+        write(*,'(a,3(x,I5,''['',a2,'']''),x,F8.4,x,F8.1,9x,2(F8.4,x))') 'H-bond', &
+                i,el(molx%iat(i)),&
+                j,el(molx%iat(j)),&
+                k,el(molx%iat(k)),&
+                r,anggrad,rYH,rYX
        endif
    enddo
  enddo
@@ -83,7 +88,7 @@ real(8) ang2,anggrad2
 integer acc(6),bond(nat,nat),n_hb
 type(molecule) mol1,mol2
 real(8) rthr,athr,a1,a2
-real(8) rab,r1,r2,da,dr
+real(8) rab,r1,r2,da,dr,rYX,rYH
 real(8) dummy(max_dummy)
 real(8), allocatable :: tvec(:)
 
@@ -121,27 +126,38 @@ acc(4)=15
 acc(5)=16
 acc(6)=17
 i=0;j=0;k=0
-write(*,'(a)'),'                atom      atom    d(H--X) [A]  d(Y-H--X) [deg]'
+!write(*,'(a)'),'                atom      atom    d(H--X) [A]  d(Y-H--X) [deg]'
+write(*,'(a)'),'           Y    -    H ....... X     H--X [A]  Y-H--X [deg] |   Y-H [A]  Y---X [A]'
 do i=1,nat ! Y
  if(.not.any(acc==mol1%iat(i))) cycle
  do j=1,nat ! H
    if(i==j) cycle
    if(bond(i,j)/=1) cycle
    if(mol1%iat(j)/=1) cycle
-   do k=1,nat
+   do k=1,nat ! X
      if(k==i.or.k==j) cycle
      if(.not.any(acc==mol1%iat(k))) cycle
        r1=rab(mol1%xyz(:,j),mol1%xyz(:,k))
        r2=rab(mol2%xyz(:,j),mol2%xyz(:,k))
+       dr=r1-r2
+       r1=rab(mol1%xyz(:,i),mol1%xyz(:,k))
+       r2=rab(mol2%xyz(:,i),mol2%xyz(:,k))
+       rYX=r1-r2
+       r1=rab(mol1%xyz(:,i),mol1%xyz(:,j))
+       r2=rab(mol2%xyz(:,i),mol2%xyz(:,j))
+       rYH=r1-r2
        call  angle(mol1%xyz,i,j,k,ang1,anggrad1)
        call  angle(mol2%xyz,i,j,k,ang2,anggrad2)
        da=anggrad1-anggrad2
-       dr=r1-r2
        if(r1<=rthr.and.anggrad1>=a1.and.anggrad1<=a2) then
        n_hb=n_hb+1
        dummy(n_hb)=dr
-         write(*,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,x,F8.1)'),'delta_H-bond',j,el(mol1%iat(i)),k,el(mol1%iat(j)),dr,da
-!         print*,i,j,k,r,anggrad
+!         write(*,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,x,F8.1)'),'delta_H-bond',j,el(mol1%iat(i)),k,el(mol1%iat(j)),dr,da
+        write(*,'(a,3(x,I5,''['',a2,'']''),x,F8.4,x,F8.1,9x,2(F8.4,x))') 'H-bond', &
+                i,el(mol1%iat(i)),&
+                j,el(mol1%iat(j)),&
+                k,el(mol1%iat(k)),&
+                dr,da,rYH,rYX
        endif
    enddo
  enddo

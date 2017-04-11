@@ -43,7 +43,7 @@ do i=1,traj%nat-1
             if(rab>maxd) maxd=rab
             if(rab<mind) mind=rab
         enddo
-        write(io,'(4x,a,4(F9.4,x))') 'avg/max/min/span :', adist,maxd,mind,abs(mind)+maxd
+        write(io,'(4x,a,4(F9.4,x))') 'avg/max/min/span :', adist/nmol,maxd,mind,abs(mind)+maxd
     enddo
 enddo
 
