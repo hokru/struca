@@ -43,10 +43,11 @@ real(8) thresh_bond,thresh_ang,thresh_tor
 
 
 ! traj distance anal
-logical traj_dist
+logical traj_dist,traj_pair
 real(8), external :: dbond
 real(8) adist,maxd,mind,ra(3),rb(3),rab
 integer ia,ja
+integer itemp(100)
 
 !hbonds
 real(8) thresh_hbr

@@ -26,6 +26,7 @@ do_compare=.false.
 do_frag=.false.
 do_single=.false.
 traj_dist=.false.
+traj_pair=.false.
 
 thresh_bond=0.05d0
 thresh_ang=1d0
@@ -33,6 +34,7 @@ thresh_tor=5d0
 thresh_hbr=3.0d0
 !thresh_hba=120d0
 thresh_hba=35d0
+itemp=0
 
 print*, '**********************'
 print*, '* structure analysis *'
@@ -69,7 +71,7 @@ if (do_traj) then
  traj%nmol=nmol
  call read_trajxyz(filevec(1),traj%nat,traj%iat,traj%mxyz,traj%nmol,.false.)
  if(traj_dist) call dist_ana(filevec(1),traj)
-  
+ if(traj_pair) call ana_bond(filevec(1),traj,ia,ja) 
  ! all data in memory
 
 endif
