@@ -7,7 +7,7 @@ subroutine analyse_primitives(mol1,mol2,basename)
 use parm
 use constant, only: au2ang
 use internals
-use logic, only: thresh_bond,thresh_ang,thresh_tor
+use logic, only: thresh_bond,thresh_ang,thresh_tor, excludeH
 use omp_lib
 use atomdata,only: el
 implicit none
@@ -36,6 +36,7 @@ call bondmatrix(mol1%xyz,mol1%iat,bond)
 
 call read_intcoord('struca.control',mol1%xyz)
 
+if(excludeH) print*,'* IGNORING ALL H-ATOMS   *'
 
 print*,'******************'
 print*,'* BOND LENGTHS   *'
@@ -51,6 +52,8 @@ kk=0
 do i=1,nat-1
  do j=i+1,nat
    k=k+1
+   if(excludeH.and.mol1%iat(i)==1) cycle
+   if(excludeH.and.mol1%iat(j)==1) cycle
    if(i==j) cycle
    if(bond(i,j)==1) then
     kk=kk+1
@@ -115,13 +118,15 @@ dummy=0d0
 s=0
 kk=0
 do i=1,nat-1
+ if(excludeH.and.mol1%iat(i)==1) cycle
  do j=1,nat
+ if(excludeH.and.mol1%iat(j)==1) cycle
   ii=nat*(i-1)+j
   if(i==j) cycle
   do k=i+1,nat
+  if(excludeH.and.mol1%iat(k)==1) cycle
    jj=nat*(j-1)+l
    if(k==j.or.k==i) cycle
-!   print*, i,j,k
    if(bond(i,j)==1.and.bond(j,k)==1) then
     kk=kk+1
     call  angle(mol1%xyz,i,j,k,ang1,anggrad1)
@@ -187,14 +192,18 @@ dummy=0d0
 s=0
 kk=0
 do i=1,nat-1
+  if(excludeH.and.mol1%iat(i)==1) cycle
   do j=1,nat
+    if(excludeH.and.mol1%iat(j)==1) cycle
     if(i==j) cycle
     if(bond(i,j)==0) cycle 
     do k=1,nat
       ii=nat*(i-1)*k
       if(k==j.or.k==i) cycle
+      if(excludeH.and.mol1%iat(k)==1) cycle
       if(bond(j,k)==0) cycle
          do l=i+1,nat
+           if(excludeH.and.mol1%iat(l)==1) cycle
            jj=nat*(j-1)*l
            if(l==k.or.l==j.or.l==i) cycle
 !            if(bond(i,j)==1.and.bond(j,k)==1.and.bond(k,l)==1) then

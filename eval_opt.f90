@@ -40,6 +40,8 @@ if(maxarg.gt.0) then
    print*,'       defaults: [ 3.0 A / 120 deg ] '
    print*,'    '
    print*,'    '
+   print*,'   -noH                                              exclude all H atoms '
+   print*,'    '
    print*,' <structure> formats: XMOL TMOL  '
    stop
   endif
@@ -56,6 +58,7 @@ if(maxarg.gt.0) then
      do_frag=.true.
     filevec(1)=arg(i+1)
   endif
+  if(fstr(ftmp,'-noH '))  excludeH=.true.
   if(fstr(ftmp,'-traj '))  then
    do_traj=.true.
    filevec(1)=arg(i+1)

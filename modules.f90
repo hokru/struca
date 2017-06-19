@@ -40,7 +40,7 @@ character(200) filevec (max_files) ! file name vector
 
 ! primitive analysis
 real(8) thresh_bond,thresh_ang,thresh_tor
-
+logical excludeH
 
 ! traj distance anal
 logical traj_dist,traj_pair

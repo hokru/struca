@@ -88,7 +88,7 @@ real(8) ang2,anggrad2
 integer acc(6),bond(nat,nat),n_hb
 type(molecule) mol1,mol2
 real(8) rthr,athr,a1,a2
-real(8) rab,r1,r2,da,dr,rYX,rYH
+real(8) rab,r1,r2,da,dr,rYX,rYH,rr
 real(8) dummy(max_dummy)
 real(8), allocatable :: tvec(:)
 
@@ -138,6 +138,7 @@ do i=1,nat ! Y
      if(k==i.or.k==j) cycle
      if(.not.any(acc==mol1%iat(k))) cycle
        r1=rab(mol1%xyz(:,j),mol1%xyz(:,k))
+       rr=r1
        r2=rab(mol2%xyz(:,j),mol2%xyz(:,k))
        dr=r1-r2
        r1=rab(mol1%xyz(:,i),mol1%xyz(:,k))
@@ -149,7 +150,7 @@ do i=1,nat ! Y
        call  angle(mol1%xyz,i,j,k,ang1,anggrad1)
        call  angle(mol2%xyz,i,j,k,ang2,anggrad2)
        da=anggrad1-anggrad2
-       if(r1<=rthr.and.anggrad1>=a1.and.anggrad1<=a2) then
+       if(rr<=rthr.and.anggrad1>=a1.and.anggrad1<=a2) then
        n_hb=n_hb+1
        dummy(n_hb)=dr
 !         write(*,'(a,x,I5,''['',a2,'']'',I5,''['',a2,'']'',x,F8.4,x,F8.1)'),'delta_H-bond',j,el(mol1%iat(i)),k,el(mol1%iat(j)),dr,da

@@ -31,21 +31,26 @@ end
 
 ! standard RMSD
 ! if this does not fit to the qfit RMSD, it means the alignment is not working correctly!
-subroutine get_rmsd(nat,xyz1,xyz2)
+subroutine get_rmsd(nat,xyz1,xyz2,iat)
 implicit none
 real(8) xyz1(3,nat),xyz2(3,nat)
-real(8) rab,e,dx,dy,dz
-integer i, nat
+real(8) rab,e,dx,dy,dz,eheavy
+integer i, nat,iat(nat)
 
 print*,' conventional RMSD between 2 sets of coordinates'
 
 e=0
+eheavy=0
 do i=1,nat
 e=e+  ( (xyz1(1,i)-xyz2(1,i))**2+(xyz1(2,i)-xyz2(2,i))**2+(xyz1(3,i)-xyz2(3,i))**2 )
+if (iat(i)==1) cycle
+eheavy=eheavy+  ( (xyz1(1,i)-xyz2(1,i))**2+(xyz1(2,i)-xyz2(2,i))**2+(xyz1(3,i)-xyz2(3,i))**2 )
 enddo
 
 e=sqrt(e/nat)
+eheavy=sqrt(eheavy/nat)
 
 write(*,'(2x,''RMSD: [ang] '',F8.4)') e
+write(*,'(2x,''RMSD (heavy): [ang] '',F8.4)') eheavy
 
 end subroutine

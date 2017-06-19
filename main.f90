@@ -21,6 +21,7 @@ type(trajectory) traj
 integer natPDB
 
 echo=.false.
+excludeH=.false.
 do_traj=.false.
 do_compare=.false.
 do_frag=.false.
@@ -104,7 +105,7 @@ print*,'Deviations: mol1-mol2'
 !  call run_drmsd(mol1%xyz,mol1%dist,mol2%xyz,mol1%dist) ! needs re-work
 
 ! normal RMSD, must be the same as above or something is wrong!
-  call get_rmsd(nat,mol1%xyz,mol2%xyz)
+  call get_rmsd(nat,mol1%xyz,mol2%xyz,mol1%iat)
 
 !set nice name
   basename=trim(filevec(2))//'_'//trim(filevec(1))
