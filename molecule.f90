@@ -131,20 +131,26 @@ call DiagSM(3,mom,e)
 !mom(1:3,3)=-mom(1:3,3)
 
 do i=1,3
-if(e(i)<1e-5) e=0d0
-rot(i)=conv/e(i)
+if(e(i)<1e-5) then
+  rot=0d0
+else
+  rot(i)=conv/e(i)
+endif
 enddo
 
 if(e(1)==0) then
  write(*,'(3x,a)') '  linear molecule!'
- write(*,'(3x,a,3(F12.5,a))') ' Rotational constants: A= *** ',' B= ',rot(2) ,' C= ',rot(3), ' [cm^-1]'
+ write(*,'(3x,a,2(F12.5,a))') ' Rotational constants: A= ***  B= ',rot(2) ,' C= ',rot(3), ' [cm^-1]'
  rot=rot*pc_c/10000.d0
- write(*,'(3x,a,3(F12.5,a))') ' Rotational constants: A= *** ',' B= ',rot(2) ,' C= ',rot(3), ' [Mhz]'
+ write(*,'(3x,a,2(F12.5,a))') ' Rotational constants: A= ***  B= ',rot(2) ,' C= ',rot(3), ' [Mhz]'
 else
  write(*,'(3x,a,3(F12.5,a))') ' Rotational constants:  A= ', rot(1),' B= ',rot(2) ,' C= ',rot(3), ' [cm^-1]'
  rot=rot*pc_c/10000.d0
  write(*,'(3x,a,3(F12.5,a))') ' Rotational constants:  A= ', rot(1),' B= ',rot(2) ,' C= ',rot(3), ' [Mhz]'
 endif
+
+
+
 
 
 if(orient) then

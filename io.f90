@@ -53,15 +53,15 @@ if(index(atmp,'$coord').ne.0) then
  ! read TMOL file
  read(33,*) atmp ! $coord
  do j=1,nat
-    read(33,'(a)') atmp ! $coord
-    backspace(33)
-    if(index(atmp,' f ').ne.0) then
-    read(33,*) txyz(1,j),txyz(2,j),txyz(3,j),cc,ff
-     tifrez(j)=1
-    iff=iff+1
-    else ! default
+!    read(33,'(a)') atmp ! $coord
+!    backspace(33)
+!    if(index(atmp,' f ').ne.0) then
+!    read(33,*) txyz(1,j),txyz(2,j),txyz(3,j),cc,ff
+!     tifrez(j)=1
+!    iff=iff+1
+!    else ! default
      read(33,*) txyz(1,j),txyz(2,j),txyz(3,j),cc
-   endif
+!   endif
    call elem(cc,tiat(j))
    txyz(1:3,j)=txyz(1:3,j)*au2ang
   enddo

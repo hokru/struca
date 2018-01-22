@@ -22,6 +22,7 @@ integer natPDB
 
 echo=.false.
 excludeH=.false.
+onlyEL=.false.
 do_traj=.false.
 do_compare=.false.
 do_frag=.false.
@@ -36,6 +37,7 @@ thresh_hbr=3.0d0
 !thresh_hba=120d0
 thresh_hba=35d0
 itemp=0
+bondf=1.1d0
 
 print*, '**********************'
 print*, '* structure analysis *'

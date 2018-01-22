@@ -41,6 +41,7 @@ if(maxarg.gt.0) then
    print*,'    '
    print*,'    '
    print*,'   -noH                                              exclude all H atoms '
+   print*,'   -bondfactor <real>                                scaling factor for bond detection (def: 1.1) '
    print*,'    '
    print*,' <structure> formats: XMOL TMOL  '
    stop
@@ -59,6 +60,10 @@ if(maxarg.gt.0) then
     filevec(1)=arg(i+1)
   endif
   if(fstr(ftmp,'-noH '))  excludeH=.true.
+  if(fstr(ftmp,'-onlyEL ')) then
+      onlyEL=.true.
+      iel=s2i(arg(i+1))
+  endif
   if(fstr(ftmp,'-traj '))  then
    do_traj=.true.
    filevec(1)=arg(i+1)
@@ -78,6 +83,8 @@ if(maxarg.gt.0) then
   ! Hbond thr
   if(fstr(ftmp,'-hb_r')) thresh_hbr=s2r(arg(i+1))
   if(fstr(ftmp,'-hb_a')) thresh_hba=s2r(arg(i+1))
+  ! bond detection
+  if(fstr(ftmp,'-bondfactor')) bondf=s2r(arg(i+1))
  enddo
 
 
