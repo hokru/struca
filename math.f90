@@ -145,12 +145,12 @@ integer i,j,k
 real(8), allocatable :: aux(:)
 integer info,lwork,xvar
 real(8) ,intent(inout) :: mat(xvar,xvar)
-real(8) xx
+real(8) xx(1)
 real(8), intent(out) :: eig(xvar)
 
 eig=0
 call dsyev ('V','U',xvar,mat,xvar,eig,xx,-1,info)
-lwork=int(xx)
+lwork=int(xx(1))
 allocate(aux(lwork))
 call dsyev ('V','U',xvar,mat,xvar,eig,aux,lwork,info)
 if(info/=0) print*,'Diagonalization failed !!'

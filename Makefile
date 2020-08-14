@@ -28,13 +28,14 @@ GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
 $(info Building: $(GIT_VERSION))
 
 
-#OPENBLAS=/usr/qc/openblas_lib/
-
-  FC = gfortran -static 
+OPENBLAS=/usr/qc/OpenBLAS.0.3_AVX/
+OPENBLAS=/Users/kruse/qc/OpenBLAS-0.3.5/
+  FC = gfortran #-static 
 #  FLAGS= -O3 -ffree-line-length-none -m64 
   FLAGS= -O -fbounds-check -ffree-line-length-none -m64 
   LIBS= -llapack -lblas
 #  LIBS= -L$(OPENBLAS)/lib/ -lopenblas -lpthread
+#  LIBS= -L$(OPENBLAS)/ -lopenblas -lpthread
 
 # targets:
 .PHONY: all

@@ -43,6 +43,8 @@ if(maxarg.gt.0) then
    print*,'   -noH                                              exclude all H atoms '
    print*,'   -bondfactor <real>                                scaling factor for bond detection (def: 1.1) '
    print*,'    '
+   print*,'   -ext <string>                                     executes <string> for every structure in a trajectory'
+   print*,'    '
    print*,' <structure> formats: XMOL TMOL  '
    stop
   endif
@@ -85,6 +87,10 @@ if(maxarg.gt.0) then
   if(fstr(ftmp,'-hb_a')) thresh_hba=s2r(arg(i+1))
   ! bond detection
   if(fstr(ftmp,'-bondfactor')) bondf=s2r(arg(i+1))
+  if(fstr(ftmp,'-ext')) then
+    traj_ext=.true.
+    ecommand=(arg(i+1))
+  endif
  enddo
 
 

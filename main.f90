@@ -11,6 +11,8 @@ implicit none
 character(80) basename
 real(8) com(3),rot1(3),rot2(3)
 real(8) mem
+real(8) dummyxyz(3,1)
+integer(4) dummyiat(1)
 character(1) flag
 character(2) esym
 
@@ -29,6 +31,7 @@ do_frag=.false.
 do_single=.false.
 traj_dist=.false.
 traj_pair=.false.
+traj_ext=.false.
 
 thresh_bond=0.05d0
 thresh_ang=1d0
@@ -75,8 +78,7 @@ if (do_traj) then
  call read_trajxyz(filevec(1),traj%nat,traj%iat,traj%mxyz,traj%nmol,.false.)
  if(traj_dist) call dist_ana(filevec(1),traj)
  if(traj_pair) call ana_bond(filevec(1),traj,ia,ja) 
- ! all data in memory
-
+ if(traj_ext) call external(filevec(1),traj)
 endif
 
 !*************************
@@ -85,7 +87,7 @@ endif
 if(do_compare) then
 
 ! poke dimensions
-  call tmolrd(trim(filevec(1)),.true.,1,1) 
+  call tmolrd(trim(filevec(1)),.true.,dummyxyz,dummyiat) 
   npair=(nat*(nat-1))/2
   allocate(mol1%xyz(3,nat),mol2%xyz(3,nat))
   allocate(mol1%dist(npair),mol2%dist(npair))
@@ -102,7 +104,7 @@ print*,'Deviations: mol1-mol2'
 !align + rmsd from fit
   call quaternion_fit(nat,mol1%xyz,mol2%xyz)
 
-  call wrxyz(mol1%iat,nat,mol2%xyz,'rot_'//trim(filevec(2)))
+  call wrxyz(mol1%iat,nat,mol2%xyz,'rot_'//trim(filevec(2)),.true.)
 
 !  call run_drmsd(mol1%xyz,mol1%dist,mol2%xyz,mol1%dist) ! needs re-work
 
@@ -141,7 +143,7 @@ endif
 !*  SINGLE MOLECULE TREATMENT *
 !******************************
 if(do_single) then
-  call tmolrd(trim(filevec(1)),.true.,1,1)
+  call tmolrd(trim(filevec(1)),.true.,dummyxyz,dummyiat)
   npair=(nat*(nat-1))/2
   allocate(mol1%xyz(3,nat))
   allocate(mol1%dist(npair))
@@ -162,7 +164,7 @@ endif
 !*  FRAGMENT ANALYSIS  *
 !***********************
 if(do_frag) then
-  call tmolrd(trim(filevec(1)),.true.,1,1)
+  call tmolrd(trim(filevec(1)),.true.,dummyxyz,dummyiat)
   npair=(nat*(nat-1))/2
   allocate(mol1%xyz(3,nat))
   allocate(mol1%dist(npair))

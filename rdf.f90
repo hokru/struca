@@ -79,3 +79,30 @@ enddo
 close(io)
 end subroutine
 
+
+
+subroutine external(base,traj)
+use logic
+use parm
+
+type(trajectory) traj
+integer io
+character(*) base
+character(255) fname,runme
+character(2) esym
+
+fname=trim(base)//'_traj.external.dat'
+open(newunit=io,file=trim(fname),status='replace')
+write(*,*) ' EXTERNAL PROGRAM ANALYSIS'
+write(*,*) ' --> ',trim(fname)
+runme=trim(ecommand)//' >> '//trim(fname)
+print*,'External command:', runme
+
+do i=1,traj%nmol
+    call wrxyz(traj%iat,traj%nat,traj%mxyz(:,:,i),'tmp.xyz',.false.)
+    call execute_command_line(runme)
+enddo
+
+
+end subroutine
+

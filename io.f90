@@ -8,8 +8,8 @@ subroutine tmolrd(infile,c_nat,xyz,iat)
 use parm, only: nat
 use constant, only: au2ang
 implicit none
-real(8), optional,intent(out)    :: xyz(3,nat)
-integer(4),optional, intent(out) :: iat(nat)
+real(8),intent(out)    :: xyz(3,nat)
+integer(4), intent(out) :: iat(nat)
 character(2) cc,ff
 character(80)  atmp
 character(*) infile
@@ -340,7 +340,7 @@ end subroutine
 !******************
 !* write xyz      *
 !******************
-subroutine wrxyz(iat,nat,xyz,infile)
+subroutine wrxyz(iat,nat,xyz,infile,do_print)
 !use parm
 implicit none
 integer i,j,k,l,nat,iat(nat)
@@ -350,7 +350,8 @@ character(*) infile
 character(120) message
 character(2) esym
 real(8) f
-print*,'writing ',trim(infile)
+logical do_print
+if(do_print) print*,'writing ',trim(infile)
 !f=0.5291770d0
 f=1d0
 open(unit=55,file=infile,iostat=ierr,status='replace')

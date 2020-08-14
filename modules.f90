@@ -37,6 +37,7 @@ logical, save:: do_traj
 logical, save:: do_single
 logical, save:: do_frag
 character(200) filevec (max_files) ! file name vector
+character(256) ecommand ! command for external programs 
 
 ! primitive analysis
 real(8) thresh_bond,thresh_ang,thresh_tor,bondf
@@ -46,7 +47,7 @@ logical onlyEL
 integer iel
 
 ! traj distance anal
-logical traj_dist,traj_pair
+logical traj_dist,traj_pair,traj_ext
 real(8), external :: dbond
 real(8) adist,maxd,mind,ra(3),rb(3),rab
 integer ia,ja
