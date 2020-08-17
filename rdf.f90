@@ -107,3 +107,31 @@ enddo
 
 end subroutine
 
+
+subroutine geom_util_lib(base,traj)
+use logic
+use parm
+implicit none
+type(trajectory) traj
+integer io
+character(*) base
+character(256) fname,runme,idstring
+character(2) esym
+
+fname=trim(base)//'_traj.geom.dat'
+open(newunit=io,file=trim(fname),status='replace')
+write(*,*) ' EXTERNAL PROGRAM ANALYSIS'
+write(*,*) ' --> ',trim(fname)
+runme=trim(ecommand)//' >> '//trim(fname)
+print*,'External command:', runme
+
+do i=1,traj%nmol
+    if(int(mod(i,nint(traj%nmol/10.0d0))).eq.0) write(*,'(I3,A)') nint(100d0*i/dble(traj%nmol)),' % done'
+    write(idstring,'(a,I7)') "molecule",i
+    call geom_util(traj%nat,traj%mxyz(:,:,i),traj%iat,options,idstring,io)
+    ! subroutine geom_util(nat,xyz,iat,options,idstring,iounit)
+enddo
+
+
+end subroutine
+

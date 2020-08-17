@@ -1,3 +1,18 @@
+!
+!    geom_util is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU Lesser General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    geom_util is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU Lesser General Public License for more details.
+!
+!    You should have received a copy of the GNU Lesser General Public License
+!    along with geom_util.  If not, see <https://www.gnu.org/licenses/>.
+!
+! Copyright (C) 2019 - 2020 Holger Kruse, Institute of Biophysics of the CAS, Czechia
 Pure Function to_upper (str) Result (string)
 
 !   ==============================
@@ -67,8 +82,8 @@ end subroutine
 subroutine charXsplit(s,wx,x)
 implicit none
 integer i,n,k,x
-character(*), intent(in) :: s
-character*(*), intent(out) ::wx
+character*80, intent(in) :: s
+character*80, intent(out) ::wx
 character*80   w(20)
 character*80   a,aa
 
@@ -268,16 +283,4 @@ character(*), intent(in):: str,c
 fstr=.false.
 fstr=index(str,c).ne.0
 end function
-
-
-
-subroutine rm_substr(instr,substr,outstr)
-character(*) instr,substr,outstr
-integer i,s(2)
-
-s(1)=index(instr,substr,.false.)
-outstr=instr(1:s(1)-1)
-!print*,instr(1:s(1)-1),' ',substr
-!print*,s(1)
-end subroutine
 

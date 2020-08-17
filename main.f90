@@ -32,6 +32,7 @@ do_single=.false.
 traj_dist=.false.
 traj_pair=.false.
 traj_ext=.false.
+geom_lib=.false.
 
 thresh_bond=0.05d0
 thresh_ang=1d0
@@ -75,10 +76,12 @@ if (do_traj) then
  allocate(traj%mxyz(3,nat,nmol),traj%iat(nat))
  traj%nat=nat
  traj%nmol=nmol
+ write(*,'(a)') ' Reading trajectory data..'
  call read_trajxyz(filevec(1),traj%nat,traj%iat,traj%mxyz,traj%nmol,.false.)
  if(traj_dist) call dist_ana(filevec(1),traj)
  if(traj_pair) call ana_bond(filevec(1),traj,ia,ja) 
  if(traj_ext) call external(filevec(1),traj)
+ if(geom_lib) call geom_util_lib(filevec(1),traj)
 endif
 
 !*************************

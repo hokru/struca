@@ -7,6 +7,7 @@ character(120) ftmp
 logical fstr
 real(8) s2r
 integer s2i
+integer iword,n_options
 
 maxarg=iargc()
 if(maxarg==0) stop 'get help with: struca -h'
@@ -44,6 +45,7 @@ if(maxarg.gt.0) then
    print*,'   -bondfactor <real>                                scaling factor for bond detection (def: 1.1) '
    print*,'    '
    print*,'   -ext <string>                                     executes <string> for every structure in a trajectory'
+   print*,'   -geom <string>                                    executes geom_util library with given option string'
    print*,'    '
    print*,' <structure> formats: XMOL TMOL  '
    stop
@@ -90,6 +92,18 @@ if(maxarg.gt.0) then
   if(fstr(ftmp,'-ext')) then
     traj_ext=.true.
     ecommand=(arg(i+1))
+  endif
+  if(fstr(ftmp,'-geom')) then
+    geom_lib=.true.
+    call cstring(arg(i+1),n_options)
+    print*,'Found ',n_options,' options'
+    if(n_options>5) STOP "wrong option string! Re-consider input!"
+    allocate(options(n_options))
+    do iword=1,n_options
+      call charXsplit(arg(i+1),options(iword),iword)
+      print*,trim(options(iword))
+    enddo
+
   endif
  enddo
 

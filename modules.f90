@@ -36,9 +36,11 @@ logical, save:: do_compare
 logical, save:: do_traj
 logical, save:: do_single
 logical, save:: do_frag
+logical, save:: geom_lib
 logical is_pdb
 character(200) filevec (max_files) ! file name vector
 character(256) ecommand ! command for external programs 
+character(256), allocatable :: options(:)
 
 ! primitive analysis
 real(8) thresh_bond,thresh_ang,thresh_tor,bondf

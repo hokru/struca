@@ -33,7 +33,7 @@ OPENBLAS=/Users/kruse/qc/OpenBLAS-0.3.5/
   FC = gfortran #-static 
 #  FLAGS= -O3 -ffree-line-length-none -m64 
   FLAGS= -O -fbounds-check -ffree-line-length-none -m64 
-  LIBS= -llapack -lblas
+  LIBS= -llapack -lblas -L./geom/ -lgeom
 #  LIBS= -L$(OPENBLAS)/lib/ -lopenblas -lpthread
 #  LIBS= -L$(OPENBLAS)/ -lopenblas -lpthread
 
