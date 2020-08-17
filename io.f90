@@ -291,46 +291,109 @@ END
 
 ! read xyz-trajectory 
 subroutine read_trajxyz(infile,nat,iat,mxyz,nmol,do_allocate)
+use logic, only: is_pdb
 implicit none
-real(8) mxyz(3,nat,nmol)
-logical do_allocate,fstr,debug
+real(8) mxyz(3,nat,nmol),s2r
+logical do_allocate,debug
 character(*) infile
-integer i,j,nat,nmol,io,iat(nat),ierr
+integer i,j,nat,nmol,io,iat(nat),ierr,check_nat
 character(200) aa,cnat
 character(2) el
+logical,external :: fstr
 
 open(newunit=io,file=infile,iostat=ierr)
 if(ierr/=0) stop 'trajectory file not found'
 
+
+is_pdb=.false.
+! check for PDB file
+do i=1,50
+  read(io,'(a)') aa
+  if(fstr(aa,'CRYST1')) is_pdb=.true.
+  if(fstr(aa,'MODEL')) is_pdb=.true.
+  if(fstr(aa,'ATOM')) is_pdb=.true.
+enddo
+
+
 debug=.true.
 if(do_allocate) then
   if(debug) print*,'checking: ',trim(infile)
-  read(io,'(a)') cnat
-  read(cnat,*) nat
-  if(debug) print'(a,I6)', ' found nat  : ',nat
-  rewind(io)
-  nmol=0
-  do
-   read(io,'(a)',end=666) aa
-   if(fstr(aa,cnat)) then
-     nmol=nmol+1 ! count lines with number of atoms
-   endif
-  enddo
-  666 continue
-  if(debug) print'(a,I6)',' found nmol : ',nmol
-  close(io)
+  if(is_pdb) then
+    print*,'Found a PDB trajectory!'
+    rewind(io)
+    nat=0
+    do
+      read(io,'(a)') aa
+      if(fstr(aa,'ATOM')) nat=nat+1
+      if(fstr(aa,'ENDMDL')) exit
+    enddo 
+    rewind(io)
+    nmol=0
+    do
+      read(io,'(a)',end=668) aa
+      if(fstr(aa,'MODEL')) nmol=nmol+1
+    enddo 
+    668 continue
+    print'(a,I6)', ' found nat  : ',nat
+    print'(a,I6)', ' found nmol : ',nmol
+  else
+    read(io,'(a)') cnat
+    read(cnat,*) nat
+    if(debug) print'(a,I6)', ' found nat  : ',nat
+    rewind(io)
+    nmol=0
+    do
+     read(io,'(a)',end=666) aa
+     if(fstr(aa,cnat)) then
+       nmol=nmol+1 ! count lines with number of atoms
+     endif
+    enddo
+    666 continue
+    if(debug) print'(a,I6)',' found nmol : ',nmol
+    close(io)
+  endif
 return
 endif
 
 ! reading EVERYTHING into memory
-do i=1,nmol
-   read(io,'(a)',end=667) aa           ! nat
-   read(io,'(a)') aa                   ! title
-   do j=1,nat
-     read(io,*) el,mxyz(1:3,j,i) ! xyz, element
-     call elem(el,iat(j))
-   enddo
-enddo
+if(is_pdb) then
+  nmol=0
+  do
+    read(io,'(a)',end=667) aa          
+    if(fstr(aa,'MODEL')) then
+      nmol=nmol+1
+      ! do i=1,nmol
+        j=0
+        do 
+          read(io,'(a)') aa          
+          if(fstr(aa,'ATOM')) then 
+             j=j+1
+             mxyz(1,j,nmol)=s2r(aa(31:38))
+             mxyz(2,j,nmol)=s2r(aa(39:46))
+             mxyz(3,j,nmol)=s2r(aa(47:54))
+             ! print*,mxyz(3,j,nmol)
+             ! STOP
+            call elem(aa(77:78),iat(j))
+          endif 
+          if(fstr(aa,'ENDMDL')) exit
+        enddo ! one model loop
+        if(nat/=j) then
+          print*,nat,j,i
+          stop 'nat is not equal check_nat!'
+        endif
+      ! enddo ! nmol
+    endif ! MODEL END
+  enddo
+else
+  do i=1,nmol
+     read(io,'(a)',end=667) aa           ! nat
+     read(io,'(a)') aa                   ! title
+     do j=1,nat
+       read(io,*) el,mxyz(1:3,j,i) ! xyz, element
+       call elem(el,iat(j))
+     enddo
+  enddo
+endif
 667 continue
 close(io)
 

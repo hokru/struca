@@ -36,6 +36,7 @@ logical, save:: do_compare
 logical, save:: do_traj
 logical, save:: do_single
 logical, save:: do_frag
+logical is_pdb
 character(200) filevec (max_files) ! file name vector
 character(256) ecommand ! command for external programs 
 

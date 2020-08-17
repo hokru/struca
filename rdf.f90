@@ -99,6 +99,7 @@ runme=trim(ecommand)//' >> '//trim(fname)
 print*,'External command:', runme
 
 do i=1,traj%nmol
+    if(int(mod(i,nint(traj%nmol/10.0))).eq.0) write(*,'(I3,A)') nint(100d0*i/dble(traj%nmol)),' % done'
     call wrxyz(traj%iat,traj%nat,traj%mxyz(:,:,i),'tmp.xyz',.false.)
     call execute_command_line(runme)
 enddo
