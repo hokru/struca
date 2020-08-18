@@ -1,6 +1,14 @@
 
  PROG = ~/bin/struca
 
+
+  FC = gfortran #-static 
+  FC = ifort
+#   FLAGS= -O -fbounds-check -ffree-line-length-none -m64 
+  LIBS= -llapack -lblas 
+#  LIBS= -L$(OPENBLAS)/lib/ -lopenblas -lpthread
+#  LIBS= -L$(OPENBLAS)/ -lopenblas -lpthread
+
  SOURCES=\
  modules.f90\
  align.f90\
@@ -23,26 +31,28 @@
 
 OBJS=$(SOURCES:.f90=.o)
 
+
+# SIMPLE INSERT FOR GEOMERTY LIBRARY
+GEOM_DIR=./geom/
+LIB_GEOM=$(GEOM_DIR)/libgeom.a
+TMP=main.o geometry.o tools.o ebe.o
+OBJS_GEOM+=$(foreach dir, $(TMP), $(addprefix $(GEOM_DIR), $(dir)))
+
+LIBS+=$(LIB_GEOM)
+
 BUILID:=$(shell date)
 GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
 $(info Building: $(GIT_VERSION))
 
 
-OPENBLAS=/usr/qc/OpenBLAS.0.3_AVX/
-OPENBLAS=/Users/kruse/qc/OpenBLAS-0.3.5/
-  FC = gfortran #-static 
-#  FLAGS= -O3 -ffree-line-length-none -m64 
-  FLAGS= -O -fbounds-check -ffree-line-length-none -m64 
-  LIBS= -llapack -lblas -L./geom/ -lgeom
-#  LIBS= -L$(OPENBLAS)/lib/ -lopenblas -lpthread
-#  LIBS= -L$(OPENBLAS)/ -lopenblas -lpthread
 
 # targets:
 .PHONY: all
 .PHONY: clean
+.PHONY: libgeom
 
-all: version $(PROG)
-
+all: version $(PROG) $(GEOM)
+geom: $(GEOM)
 
 version:
 	@touch version.f90
@@ -61,13 +71,15 @@ version:
 	$(FC) $(FLAGS) -c $< -o $@
 
 
-$(PROG):$(OBJS) 
+$(PROG):$(OBJS) libgeom
 	$(FC) $(LINK) $(OBJS) $(LIBS) -o $(PROG)
 
-
-
-
+libgeom:
+	FC=$(FC) make -C $(GEOM_DIR)
+# 	ar rc $(LIB_GEOM) $(OBJS_GEOM) 
+# 	ranlib $(PROG)
+	
 
 clean:
-	rm -f *.o *.mod $(PROG) 
+	rm -f *.o $(GEOM_DIR)/*.o *.mod $(PROG) $(LIB_GEOM)
 
