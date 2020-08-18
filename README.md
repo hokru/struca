@@ -18,12 +18,13 @@ This is a **simple** tool to help compare structures and compute rajectory data 
 * comparison of Rotational constants
 * request custom primitives for analysis (bonds/angles/torsions)
 * print internal coordinates, H-bonds, Rotational constants for single molecule
-* [soon] trajectory analysis
+* rudimentary trajectory analysis
+* now includes the geom\_util library
 
 ### prerequisites
 
 - **BLAS/LAPACK**: performance not critical, any library will suffice 
-- **Fortran compiler**: developed and tested with gfortran (4.7).
+- **Fortran compiler**: developed and tested with gfortran and ifort.
 - **git**: git is needed to include the git version in the output.
 
 ### scientific references
