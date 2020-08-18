@@ -307,20 +307,21 @@ if(ierr/=0) stop 'trajectory file not found'
 
 is_pdb=.false.
 ! check for PDB file
-do i=1,50
-  read(io,'(a)') aa
+do i=1,20
+  read(io,'(a)',end=777) aa
   if(fstr(aa,'CRYST1')) is_pdb=.true.
   if(fstr(aa,'MODEL')) is_pdb=.true.
   if(fstr(aa,'ATOM')) is_pdb=.true.
 enddo
-
+777 continue
+rewind(io)
 
 debug=.true.
 if(do_allocate) then
   if(debug) print*,'checking: ',trim(infile)
   if(is_pdb) then
     print*,'Found a PDB trajectory!'
-    rewind(io)
+    ! rewind(io)
     nat=0
     do
       read(io,'(a)') aa

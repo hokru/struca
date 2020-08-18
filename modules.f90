@@ -29,6 +29,10 @@ integer, parameter:: max_dummy=50000
 
 end module
 
+module helper
+real(8) :: nstep
+end module
+
 module logic
 integer, parameter :: max_files=10
 logical,save:: echo 

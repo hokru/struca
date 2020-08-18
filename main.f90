@@ -5,6 +5,7 @@
 program  STRUCA
 use parm  ! essential parameter
 use logic ! essential logic
+use helper
 !use omp_lib
 !use ls_rmsd
 implicit none
@@ -22,6 +23,7 @@ type(trajectory) traj
 
 integer natPDB
 
+nstep=10.0d0
 echo=.false.
 excludeH=.false.
 onlyEL=.false.

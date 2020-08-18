@@ -86,10 +86,11 @@ use logic
 use parm
 
 type(trajectory) traj
-integer io
+integer io, p
 character(*) base
 character(255) fname,runme
 character(2) esym
+real(8) nstep
 
 fname=trim(base)//'_traj.external.dat'
 open(newunit=io,file=trim(fname),status='replace')
@@ -99,7 +100,7 @@ runme=trim(ecommand)//' >> '//trim(fname)
 print*,'External command:', runme
 
 do i=1,traj%nmol
-    if(int(mod(i,nint(traj%nmol/10.0))).eq.0) write(*,'(I3,A)') nint(100d0*i/dble(traj%nmol)),' % done'
+    call counter(i,traj%nmol)
     call wrxyz(traj%iat,traj%nat,traj%mxyz(:,:,i),'tmp.xyz',.false.)
     call execute_command_line(runme)
 enddo
@@ -113,25 +114,42 @@ use logic
 use parm
 implicit none
 type(trajectory) traj
-integer io
+integer io, iword
 character(*) base
-character(256) fname,runme,idstring
+character(256) fname, runme, idstring
 character(2) esym
+real(8) nstep
 
 fname=trim(base)//'_traj.geom.dat'
 open(newunit=io,file=trim(fname),status='replace')
-write(*,*) ' EXTERNAL PROGRAM ANALYSIS'
+write(*,*) ' geom_util library ANALYSIS'
 write(*,*) ' --> ',trim(fname)
-runme=trim(ecommand)//' >> '//trim(fname)
-print*,'External command:', runme
+print*,'options: '
+print*,' -- '
+do iword=1,size(options)
+  print*,trim(options(iword))
+enddo
+print*,' -- '
+print*,traj%nmol
 
+nstep=10d0
 do i=1,traj%nmol
-    if(int(mod(i,nint(traj%nmol/10.0d0))).eq.0) write(*,'(I3,A)') nint(100d0*i/dble(traj%nmol)),' % done'
+    call counter(i,traj%nmol)
+    nstep=nstep+10d0
     write(idstring,'(a,I7)') "molecule",i
     call geom_util(traj%nat,traj%mxyz(:,:,i),traj%iat,options,idstring,io)
-    ! subroutine geom_util(nat,xyz,iat,options,idstring,iounit)
 enddo
-
-
 end subroutine
 
+
+subroutine counter(i,n)
+use helper, only: nstep
+implicit none
+integer i,n
+real(8) p
+p=100d0*dble(i)/dble(n)
+if(p>=nstep ) then
+    nstep=nstep+10.0d0
+    write(*,'(I3,A)') nint(p),' % done'
+endif
+end 
