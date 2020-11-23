@@ -1,11 +1,12 @@
 
  PROG = ~/bin/struca
 
-
+#  MKLROOT=/home/kruse/intel/oneapi/mkl/2021.1-beta09/
   FC = gfortran #-static 
 #   FC = ifort
   FLAGS= -O -fbounds-check -ffree-line-length-none -m64 
   LIBS= -llapack -lblas 
+#  LIBS = LIBS= -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_gf_lp64.a ${MKLROOT}/lib/intel64/libmkl_sequential.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm -ldl
 #  LIBS= -L$(OPENBLAS)/lib/ -lopenblas -lpthread
 #  LIBS= -L$(OPENBLAS)/ -lopenblas -lpthread
 
@@ -75,7 +76,7 @@ $(PROG):$(OBJS) libgeom
 	$(FC) $(LINK) $(OBJS) $(LIBS) -o $(PROG)
 
 libgeom:
-	FC=$(FC) FFLAGS=$(FFLAGS) make -C $(GEOM_DIR)
+	FC='$(FC)' FFLAGS='$(FLAGS)' make -C $(GEOM_DIR)
 # 	ar rc $(LIB_GEOM) $(OBJS_GEOM) 
 # 	ranlib $(PROG)
 	
