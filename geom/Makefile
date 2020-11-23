@@ -3,7 +3,7 @@ PROG     = libgeom.a
 
 # compiler options
 # FC= gfortran #-static
-FFLAGS = -Og -g -ffree-line-length-none -fbounds-check
+# FFLAGS = -Og -g -ffree-line-length-none -fbounds-check
 LINKER  = ar
 
 OBJS=main.o geometry.o string.o tools.o ebe.o

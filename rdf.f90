@@ -132,10 +132,8 @@ enddo
 print*,' -- '
 print*,traj%nmol
 
-nstep=10d0
 do i=1,traj%nmol
     call counter(i,traj%nmol)
-    nstep=nstep+10d0
     write(idstring,'(a,I7)') "molecule",i
     call geom_util(traj%nat,traj%mxyz(:,:,i),traj%iat,options,idstring,io)
 enddo

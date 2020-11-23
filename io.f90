@@ -301,8 +301,8 @@ character(200) aa,cnat
 character(2) el
 logical,external :: fstr
 
-open(newunit=io,file=infile,iostat=ierr)
-if(ierr/=0) stop 'trajectory file not found'
+open(newunit=io,file=infile,iostat=ierr,status='old')
+if(ierr/=0) stop 'trajectory file I/O error'
 
 
 is_pdb=.false.
@@ -353,6 +353,7 @@ if(do_allocate) then
     if(debug) print'(a,I6)',' found nmol : ',nmol
     close(io)
   endif
+close(io)
 return
 endif
 
